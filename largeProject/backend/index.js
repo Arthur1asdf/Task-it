@@ -9,6 +9,9 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+const JWT_SECRET = "SECRET_TUNNEL";
+
+const MONGO_URI = "mongodb+srv://keolamcgowan97:COP4331@maindb.maqnx.mongodb.net/?retryWrites=true&w=majority&appName=MainD";
 let db;
 
 // Connect to MongoDB
@@ -20,7 +23,7 @@ MongoClient.connect(MONGO_URI, { useUnifiedTopology: true })
   .catch((error) => console.error("MongoDB connection error:", error));
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("This is the home");
 });
 
 /**
