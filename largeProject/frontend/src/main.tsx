@@ -4,6 +4,6 @@ import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <h1>Hello, boobies!</h1>
+    <h1>Hello, booty!</h1>
   </StrictMode>
 );
