@@ -4,14 +4,15 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const { MongoClient } = require("mongodb");
 const bcrypt = require("bcrypt"); // import bcrypt for password hashing
+require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const JWT_SECRET = "SECRET_TUNNEL";
+const JWT_SECRET = process.env.JWT_SECRET;
 
-const MONGO_URI = "mongodb+srv://keolamcgowan97:COP4331@maindb.maqnx.mongodb.net/?retryWrites=true&w=majority&appName=MainD";
+const MONGO_URI = process.env.MONGO_URI;
 let db;
 
 // Connect to MongoDB
