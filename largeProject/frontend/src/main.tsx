@@ -4,6 +4,6 @@ import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <h1>Hello, booty!</h1>
+    <h1 className="text-3xl font-bold underline">Hello, booty!</h1>
   </StrictMode>
 );
