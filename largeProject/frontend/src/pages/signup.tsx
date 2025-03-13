@@ -57,16 +57,6 @@ const SignUp = () => {
               color: rgbColor,
             }}
           />
-          {/* Confirm Password Input */}
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
-            style={{
-              borderColor: rgbColor,
-              color: rgbColor,
-            }}
-          />
         </form>
 
         {/* Submit Button */}
