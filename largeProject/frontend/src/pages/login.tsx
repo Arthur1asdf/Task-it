@@ -4,8 +4,8 @@ import "../index.css";
 
 const Login: React.FC = () => {
   const navigate = useNavigate(); // Hook for navigation
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   // State for RGB color
   const [rgbColor, setRgbColor] = useState("rgb(85, 70, 60)"); // Default RGB color
 
@@ -28,6 +28,7 @@ const Login: React.FC = () => {
         if (response.ok) {
             localStorage.setItem("token", data.token);
             console.log(data);
+            navigate("/home");
             alert("Success!");
         } else {
             alert(data.message || "Error occurred");
@@ -108,7 +109,6 @@ const Login: React.FC = () => {
             type="submit" 
             className="text-lg font-bold bg-transparent hover:underline" 
             style={{ color: rgbColor }}
-            onClick={() => navigate("/home")}
             >
               Enter
             </button>
@@ -124,7 +124,7 @@ const Login: React.FC = () => {
               backgroundColor: "#FAEC91",
               boxShadow: "4px 4px 10px rgba(0,0,0,0.3)",
             }}
-            onClick={() => navigate("/signup")} // Navigate to Sign Up
+            onClick={() => navigate("/signup")}
             type="button"
           >
             Sign Up
