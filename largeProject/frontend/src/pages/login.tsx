@@ -9,36 +9,34 @@ const Login: React.FC = () => {
   // State for RGB color
   const [rgbColor, setRgbColor] = useState("rgb(85, 70, 60)"); // Default RGB color
 
-  
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault(); 
-  
-      try {
-        const response = await fetch('http://146.190.218.123:5000/api/login', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ "Username": username, "Password": password}),
-        });
-  
-        const data = await response.json();
-        console.log(data);
-        if (response.ok) {
-            localStorage.setItem("token", data.token);
-            console.log(data);
-            navigate("/home");
-            alert("Success!");
-        } else {
-            alert(data.message || "Error occurred");
-        }
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://146.190.218.123:5000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ Username: username, Password: password }),
+      });
+
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+
+        navigate("/home");
+        console.log("Login Successful, however we need to redirect to the home page after a slight delay");
+      } else {
+        // This is just placeholder but we will have to desgin it on the frontend later
+        console.log("Wrong Username or Password");
+      }
     } catch (error) {
-        console.error("Error:", error);
-        alert("Something went wrong");
+      console.error("Error:", error);
+      alert("Something went wrong");
     }
-    };
-    
+  };
 
   return (
     <div
@@ -46,10 +44,7 @@ const Login: React.FC = () => {
       style={{ backgroundImage: "url('https://i.ibb.co/21hGpH7M/Login-Door.png')" }} // Use your actual image path
     >
       {/* Invisible Box to group all elements */}
-      <div
-        className="absolute left-[50%] top-[22%] translate-x-[-50%] flex flex-col items-center"
-        style={{ color: rgbColor }}
-      >
+      <div className="absolute left-[50%] top-[22%] translate-x-[-50%] flex flex-col items-center" style={{ color: rgbColor }}>
         {/* Login Title */}
         <h2 className="text-3xl font-bold mb-2 text-center" style={{ color: rgbColor }}>
           Login
@@ -105,11 +100,7 @@ const Login: React.FC = () => {
 
           {/* Enter Button */}
           <div className="w-full flex justify-center mt-2">
-            <button 
-            type="submit" 
-            className="text-lg font-bold bg-transparent hover:underline" 
-            style={{ color: rgbColor }}
-            >
+            <button type="submit" className="text-lg font-bold bg-transparent hover:underline" style={{ color: rgbColor }}>
               Enter
             </button>
           </div>
@@ -136,6 +127,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-
-
-
