@@ -1,21 +1,13 @@
 import React, { useState } from "react";
 import "../index.css";
 
-const Login = () => {
+const SignUp = () => {
   // State for RGB color
   const [rgbColor, setRgbColor] = useState("rgb(85, 70, 60)"); // Default RGB color (like your #55463C)
 
   // Functions to handle navigation
-  const goToForgetUsername = () => {
-    window.location.href = "forgetusername.tsx"; // Redirects to forget username page
-  };
-
-  const goToForgetPassword = () => {
-    window.location.href = "forgetpassword.tsx"; // Redirects to forget password page
-  };
-
-  const goToSignUp = () => {
-    window.location.href = "signup.tsx"; // Redirects to sign-up page
+  const goToLogin = () => {
+    window.location.href = "login.tsx"; // Redirects to login page
   };
 
   return (
@@ -28,16 +20,16 @@ const Login = () => {
         className="absolute left-[50%] top-[22%] translate-x-[-50%] flex flex-col items-center"
         style={{ color: rgbColor }}
       >
-        {/* Login Title */}
+        {/* Sign Up Title */}
         <h2 className="text-3xl font-bold mb-2 text-center" style={{ color: rgbColor }}>
-          Login
+          Sign Up
         </h2>
 
-        {/* Login Form */}
+        {/* Sign Up Form */}
         <form className="w-full flex flex-col gap-1">
-          {/* Email Input */}
+          {/* Username Input */}
           <input
-            type="username"
+            type="text"
             placeholder="Username"
             className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
             style={{
@@ -45,18 +37,16 @@ const Login = () => {
               color: rgbColor,
             }}
           />
-          {/* Forgot Username Link */}
-          <div className="w-full text-right">
-            <button
-              className="text-sm hover:underline"
-              style={{ color: rgbColor }}
-              onClick={goToForgetUsername} // Redirect to Forget Username
-              type="button"
-            >
-              Forgot Username?
-            </button>
-          </div>
-
+          {/* Email Input */}
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
+            style={{
+              borderColor: rgbColor,
+              color: rgbColor,
+            }}
+          />
           {/* Password Input */}
           <input
             type="password"
@@ -67,23 +57,22 @@ const Login = () => {
               color: rgbColor,
             }}
           />
-          {/* Forgot Password Link */}
-          <div className="w-full text-right">
-            <button
-              className="text-sm hover:underline"
-              style={{ color: rgbColor }}
-              onClick={goToForgetPassword} // Redirect to Forget Password
-              type="button"
-            >
-              Forgot Password?
-            </button>
-          </div>
+          {/* Confirm Password Input */}
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
+            style={{
+              borderColor: rgbColor,
+              color: rgbColor,
+            }}
+          />
         </form>
 
-        {/* Enter Button */}
+        {/* Submit Button */}
         <div className="w-full flex justify-center mt-2">
           <button type="submit" className="text-lg font-bold bg-transparent hover:underline" style={{ color: rgbColor }}>
-            Enter
+            Sign Up
           </button>
         </div>
 
@@ -96,10 +85,10 @@ const Login = () => {
               backgroundColor: "#FAEC91",
               boxShadow: "4px 4px 10px rgba(0,0,0,0.3)",
             }}
-            onClick={goToSignUp} // Redirect to Sign Up
+            onClick={goToLogin} // Redirect to Login
             type="button"
           >
-            Sign Up
+            Log In
           </button>
         </div>
       </div>
@@ -107,4 +96,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
