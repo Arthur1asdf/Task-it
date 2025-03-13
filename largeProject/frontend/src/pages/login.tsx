@@ -9,12 +9,14 @@ const Login: React.FC = () => {
   // State for RGB color
   const [rgbColor, setRgbColor] = useState("rgb(85, 70, 60)"); // Default RGB color
 
+  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault(); // Prevents the page from refreshing on form submission
+      e.preventDefault(); 
   
       try {
         const response = await fetch('http://146.190.218.123:5000/api/login', {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -22,7 +24,7 @@ const Login: React.FC = () => {
         });
   
         const data = await response.json();
-      
+        console.log(data);
         if (response.ok) {
             localStorage.setItem("token", data.token);
             console.log(data);
@@ -53,7 +55,7 @@ const Login: React.FC = () => {
         </h2>
 
         {/* Login Form */}
-        <form className="w-full flex flex-col gap-1">
+        <form className="w-full flex flex-col gap-1" onSubmit={handleSubmit}>
           {/* Email Input */}
           <input
             type="username"
@@ -63,6 +65,7 @@ const Login: React.FC = () => {
               borderColor: rgbColor,
               color: rgbColor,
             }}
+            onChange={(e) => setUsername(e.target.value)}
           />
           {/* Forgot Username Link */}
           <div className="w-full text-right">
@@ -85,6 +88,7 @@ const Login: React.FC = () => {
               borderColor: rgbColor,
               color: rgbColor,
             }}
+            onChange={(e) => setPassword(e.target.value)}
           />
           {/* Forgot Password Link */}
           <div className="w-full text-right">
@@ -97,18 +101,19 @@ const Login: React.FC = () => {
               Forgot Password?
             </button>
           </div>
-        </form>
 
-        {/* Enter Button */}
-        <div className="w-full flex justify-center mt-2">
-          <button 
-          type="submit" 
-          className="text-lg font-bold bg-transparent hover:underline" 
-          style={{ color: rgbColor }}
-          onClick={() => navigate("/home")}>
-            Enter
-          </button>
-        </div>
+          {/* Enter Button */}
+          <div className="w-full flex justify-center mt-2">
+            <button 
+            type="submit" 
+            className="text-lg font-bold bg-transparent hover:underline" 
+            style={{ color: rgbColor }}
+            onClick={() => navigate("/home")}
+            >
+              Enter
+            </button>
+          </div>
+        </form>
 
         {/* Sticky Note Styled Sign-Up Button */}
         <div className="w-full flex justify-center mt-2">
