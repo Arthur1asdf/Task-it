@@ -21,13 +21,13 @@ const SignUp = () => {
           headers: {
               "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username, email, password }),
+          body: JSON.stringify({ "Username": username, "Email": email, "Password": password}),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-          localStorage.setItem("token", data.token); // Store token in localStorage
+          localStorage.setItem("token", data.token);
           alert("Success!");
       } else {
           alert(data.message || "Error occurred");

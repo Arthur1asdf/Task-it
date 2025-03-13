@@ -18,14 +18,14 @@ const Login: React.FC = () => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ "Username": username, "Password": password}),
         });
   
         const data = await response.json();
-  
+      
         if (response.ok) {
             localStorage.setItem("token", data.token);
-            
+            console.log(data);
             alert("Success!");
         } else {
             alert(data.message || "Error occurred");
