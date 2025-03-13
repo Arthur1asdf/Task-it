@@ -1,22 +1,41 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
 import "../index.css";
 
-const Login = () => {
+const Login: React.FC = () => {
+  const navigate = useNavigate(); // Hook for navigation
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
   // State for RGB color
-  const [rgbColor, setRgbColor] = useState("rgb(85, 70, 60)"); // Default RGB color (like your #55463C)
+  const [rgbColor, setRgbColor] = useState("rgb(85, 70, 60)"); // Default RGB color
 
-  // Functions to handle navigation
-  const goToForgetUsername = () => {
-    window.location.href = "forgetusername.tsx"; // Redirects to forget username page
-  };
-
-  const goToForgetPassword = () => {
-    window.location.href = "forgetpassword.tsx"; // Redirects to forget password page
-  };
-
-  const goToSignUp = () => {
-    window.location.href = "signup.tsx"; // Redirects to sign-up page
-  };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault(); // Prevents the page from refreshing on form submission
+  
+      try {
+        const response = await fetch('http://146.190.218.123:5000/api/login', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+            localStorage.setItem("token", data.token);
+            
+            alert("Success!");
+        } else {
+            alert(data.message || "Error occurred");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Something went wrong");
+    }
+    };
+    
 
   return (
     <div
@@ -50,7 +69,7 @@ const Login = () => {
             <button
               className="text-sm hover:underline"
               style={{ color: rgbColor }}
-              onClick={goToForgetUsername} // Redirect to Forget Username
+              onClick={() => navigate("/forgetusername")} // Navigate to Forget Username
               type="button"
             >
               Forgot Username?
@@ -72,7 +91,7 @@ const Login = () => {
             <button
               className="text-sm hover:underline"
               style={{ color: rgbColor }}
-              onClick={goToForgetPassword} // Redirect to Forget Password
+              onClick={() => navigate("/forgetpassword")} // Navigate to Forget Password
               type="button"
             >
               Forgot Password?
@@ -82,7 +101,11 @@ const Login = () => {
 
         {/* Enter Button */}
         <div className="w-full flex justify-center mt-2">
-          <button type="submit" className="text-lg font-bold bg-transparent hover:underline" style={{ color: rgbColor }}>
+          <button 
+          type="submit" 
+          className="text-lg font-bold bg-transparent hover:underline" 
+          style={{ color: rgbColor }}
+          onClick={() => navigate("/home")}>
             Enter
           </button>
         </div>
@@ -96,7 +119,7 @@ const Login = () => {
               backgroundColor: "#FAEC91",
               boxShadow: "4px 4px 10px rgba(0,0,0,0.3)",
             }}
-            onClick={goToSignUp} // Redirect to Sign Up
+            onClick={() => navigate("/signup")} // Navigate to Sign Up
             type="button"
           >
             Sign Up
@@ -108,3 +131,6 @@ const Login = () => {
 };
 
 export default Login;
+
+
+

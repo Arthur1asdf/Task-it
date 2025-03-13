@@ -1,13 +1,21 @@
 import { StrictMode } from "react";
 import React from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
 import Login from "./pages/login";
-import SignUp from "./pages/signup"; 
-
+import SignUp from "./pages/signup";
+import Home from "./pages/home";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-  <Login />
-</StrictMode>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="*" element={<Login />} /> {/* Default Route */}
+      </Routes>
+    </Router>
+  </StrictMode>
 );
