@@ -25,7 +25,7 @@ MongoClient.connect(MONGO_URI, { useUnifiedTopology: true })
 
     app.use("/api/register", registerRoute);
     app.use("/api/login", loginRoute);
-    app.use("/api/tasks", taskRoute);
+    app.use("/api/taskRoute", taskRoute);
   })
   .catch((error) => console.error("MongoDB connection error:", error));
 
