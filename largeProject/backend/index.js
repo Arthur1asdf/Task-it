@@ -20,13 +20,12 @@ MongoClient.connect(MONGO_URI, { useUnifiedTopology: true })
 
     // Import and use routes
     const registerRoute = require("./routes/registerRoute")(db);
-    const loginRoute = require("./routes/loginRoute")(db, JWT_SECRET);    
-    // const taskRoute = require("./routes/taskRoute")(db);
-
+    const loginRoute = require("./routes/loginRoute")(db, JWT_SECRET);
+    const taskRoute = require("./routes/taskRoute")(db);
 
     app.use("/api/register", registerRoute);
     app.use("/api/login", loginRoute);
-    //app.use("/api/tasks", taskRoute); 
+    app.use("/api/tasks", taskRoute);
   })
   .catch((error) => console.error("MongoDB connection error:", error));
 
