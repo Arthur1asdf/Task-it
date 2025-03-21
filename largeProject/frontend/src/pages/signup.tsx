@@ -53,7 +53,7 @@ const SignUp = () => {
 
     console.log("I HANDLING THINGS");
     try {
-      const response = await fetch("http://146.190.218.123:5000/api/register", {
+      const response = await fetch("http://146.190.218.123:5000/api/register/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
