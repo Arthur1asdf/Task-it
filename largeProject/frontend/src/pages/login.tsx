@@ -8,10 +8,9 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   // State for RGB color
   const [rgbColor, setRgbColor] = useState("rgb(85, 70, 60)"); // Default RGB color
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setRgbColor("rgb(85, 70, 60)"); // fuck you judy just use a regular ass const varialbe why the fuck are you using a useState dont touch this
     try {
       const response = await fetch("http://146.190.218.123:5000/api/login", {
         method: "POST",
@@ -38,21 +37,21 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div
-      className="h-screen w-full bg-cover bg-center relative"
-      style={{ backgroundImage: "url('https://i.ibb.co/21hGpH7M/Login-Door.png')" }}
-    >
+    <div className="h-screen w-full bg-cover bg-center relative" style={{ backgroundImage: "url('https://i.ibb.co/21hGpH7M/Login-Door.png')" }}>
       {/* Invisible Box to group all elements */}
-      <div className="absolute left-[50%] top-[22%] translate-x-[-50%] flex flex-col items-center" 
-      style={{ 
-        color: rgbColor 
-        }}>
-
+      <div
+        className="absolute left-[50%] top-[22%] translate-x-[-50%] flex flex-col items-center"
+        style={{
+          color: rgbColor,
+        }}
+      >
         {/* Login Title */}
-        <h2 className="text-3xl font-bold mb-2 text-center" 
-        style={{ 
-          color: rgbColor 
-          }}>
+        <h2
+          className="text-3xl font-bold mb-2 text-center"
+          style={{
+            color: rgbColor,
+          }}
+        >
           Login
         </h2>
 
@@ -106,10 +105,13 @@ const Login: React.FC = () => {
 
           {/* Enter Button */}
           <div className="w-full flex justify-center mt-2">
-            <button type="submit" className="text-lg font-bold bg-transparent hover:underline" 
-            style={{ 
-              color: rgbColor 
-              }}>
+            <button
+              type="submit"
+              className="text-lg font-bold bg-transparent hover:underline"
+              style={{
+                color: rgbColor,
+              }}
+            >
               Enter
             </button>
           </div>

@@ -10,6 +10,7 @@ const ForgetPassword: React.FC = () => {
   // Handle form submission (for demonstration purposes, you can integrate your API here)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setRgbColor("rgb(85, 70, 60)"); // fuck you judy just use a regular ass const varialbe why the fuck are you using a useState dont touch this
 
     try {
       // API call to trigger password reset functionality
@@ -25,27 +26,24 @@ const ForgetPassword: React.FC = () => {
   };
 
   return (
-    <div
-      className="h-screen w-full bg-cover bg-center relative"
-      style={{ backgroundImage: "url('https://i.ibb.co/5gPp8JnX/Untitled115-20250320155538.png')" }} 
-    >
+    <div className="h-screen w-full bg-cover bg-center relative" style={{ backgroundImage: "url('https://i.ibb.co/5gPp8JnX/Untitled115-20250320155538.png')" }}>
       {/* Invisible Box to group all elements */}
-      <div className="absolute left-[50%] top-[28%] translate-x-[-50%] flex flex-col items-center" 
-      style={{ color: rgbColor }}>
-
+      <div className="absolute left-[50%] top-[28%] translate-x-[-50%] flex flex-col items-center" style={{ color: rgbColor }}>
         {/* Forget Password Title */}
-        <h2 className="text-3xl font-bold mb-2 text-center" 
-        style={{ color: rgbColor }}>
+        <h2 className="text-3xl font-bold mb-2 text-center" style={{ color: rgbColor }}>
           Forgot Password
         </h2>
 
         {/* Instructions Line */}
-        <p className="text-sm mb-4 text-center" 
-        style={{ 
-          color: rgbColor, 
-          maxWidth: '375px', 
-          width: '100%', 
-          textAlign: 'center'}}>
+        <p
+          className="text-sm mb-4 text-center"
+          style={{
+            color: rgbColor,
+            maxWidth: "375px",
+            width: "100%",
+            textAlign: "center",
+          }}
+        >
           Enter your email address and we will send you instructions to reset your password
         </p>
 
@@ -57,10 +55,10 @@ const ForgetPassword: React.FC = () => {
               type="email"
               placeholder="Enter your email"
               className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
-            style={{
-              borderColor: rgbColor,
-              maxWidth: '350px', 
-              width: '100%',
+              style={{
+                borderColor: rgbColor,
+                maxWidth: "350px",
+                width: "100%",
               }}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -82,12 +80,7 @@ const ForgetPassword: React.FC = () => {
 
         {/* Back to Login Button with Underline */}
         <div className="w-full flex justify-center mt-4">
-          <button
-            className="text-lg font-bold bg-transparent hover:underline px-4 py-2"
-            onClick={() => navigate("/login")}
-            type="button"
-            style={{ color: rgbColor }}
-          >
+          <button className="text-lg font-bold bg-transparent hover:underline px-4 py-2" onClick={() => navigate("/login")} type="button" style={{ color: rgbColor }}>
             Back to Login
           </button>
         </div>

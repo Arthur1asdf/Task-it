@@ -49,6 +49,7 @@ const SignUp = () => {
     if (!validatePassword(password)) {
       return; // Don't submit if password is invalid
     }
+    setRgbColor("rgb(85, 70, 60)"); // fuck you judy just use a regular ass const varialbe why the fuck are you using a useState dont touch this
 
     console.log("I HANDLING THINGS");
     try {
@@ -76,10 +77,7 @@ const SignUp = () => {
   };
 
   return (
-    <div
-      className="h-screen w-full bg-cover bg-center relative"
-      style={{ backgroundImage: "url('https://i.ibb.co/21hGpH7M/Login-Door.png')" }}
-    >
+    <div className="h-screen w-full bg-cover bg-center relative" style={{ backgroundImage: "url('https://i.ibb.co/21hGpH7M/Login-Door.png')" }}>
       <div
         className="absolute left-[50%] top-[22%] translate-x-[-50%] flex flex-col items-center"
         style={{
@@ -130,36 +128,15 @@ const SignUp = () => {
             />
 
             {/* Larger popup to the side for password requirements */}
-            <div
-              className="absolute top-[-90px] right-[-450px] bg-white p-6 shadow-lg w-[300px] rounded-lg"
-              style={{ display: password ? "block" : "none" }}
-            >
+            <div className="absolute top-[-90px] right-[-450px] bg-white p-6 shadow-lg w-[300px] rounded-lg" style={{ display: password ? "block" : "none" }}>
               <h3 className="font-semibold text-lg mb-2">Password Requirements</h3>
-              <div
-                className={`flex items-center ${requirements.length ? "text-green-500" : "text-red-500"}`}
-              >
-                {requirements.length ? "✔️" : "❌"} Minimum 8 characters
-              </div>
-              <div
-                className={`flex items-center ${requirements.uppercase ? "text-green-500" : "text-red-500"}`}
-              >
-                {requirements.uppercase ? "✔️" : "❌"} At least one uppercase letter
-              </div>
-              <div
-                className={`flex items-center ${requirements.lowercase ? "text-green-500" : "text-red-500"}`}
-              >
-                {requirements.lowercase ? "✔️" : "❌"} At least one lowercase letter
-              </div>
-              <div
-                className={`flex items-center ${requirements.number ? "text-green-500" : "text-red-500"}`}
-              >
-                {requirements.number ? "✔️" : "❌"} At least one number
-              </div>
+              <div className={`flex items-center ${requirements.length ? "text-green-500" : "text-red-500"}`}>{requirements.length ? "✔️" : "❌"} Minimum 8 characters</div>
+              <div className={`flex items-center ${requirements.uppercase ? "text-green-500" : "text-red-500"}`}>{requirements.uppercase ? "✔️" : "❌"} At least one uppercase letter</div>
+              <div className={`flex items-center ${requirements.lowercase ? "text-green-500" : "text-red-500"}`}>{requirements.lowercase ? "✔️" : "❌"} At least one lowercase letter</div>
+              <div className={`flex items-center ${requirements.number ? "text-green-500" : "text-red-500"}`}>{requirements.number ? "✔️" : "❌"} At least one number</div>
             </div>
           </div>
-
           {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>} {/* Show error message */}
-
           <div className="w-full flex justify-center mt-2">
             <button
               type="submit"

@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import React from "react";
+// import React from "react"; uncomment if needed
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
@@ -8,7 +8,6 @@ import SignUp from "./pages/signup";
 import Home from "./pages/home";
 import Forgetpassword from "./pages/forgetpassword";
 import Forgetusername from "./pages/forgetusername";
-
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
