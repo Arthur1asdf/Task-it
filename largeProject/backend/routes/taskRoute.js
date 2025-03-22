@@ -11,7 +11,7 @@ module.exports = (db) => {
       //this is a QUERY DO NOT USE BODY THIS IS HOW YOU TEST IN POSTMAN
       //  http://localhost:5000/api/taskRoute/get-week?date=2025-03-20
       // NO BODY REQUIRED
-      //FRONT END
+      // FRONT END
       //  FUCK YOU CHATGPT IT
       const { date } = req.query; // e.g., "2025-03-20"
       if (!date) {

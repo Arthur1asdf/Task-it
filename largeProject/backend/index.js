@@ -22,10 +22,14 @@ MongoClient.connect(MONGO_URI, { useUnifiedTopology: true })
     const registerRoute = require("./routes/registerRoute")(db);
     const loginRoute = require("./routes/loginRoute")(db, JWT_SECRET);
     const taskRoute = require("./routes/taskRoute")(db);
+    const forgotPasswordRoute = require("./routes/forgotPasswordRoute")(db);
+    const resetPasswordRoute = require("./routes/resetPasswordRoute")(db);
 
     app.use("/api/register", registerRoute);
     app.use("/api/login", loginRoute);
     app.use("/api/taskRoute", taskRoute);
+    app.use("/api/forgot-password", forgotPasswordRoute);
+    app.use("/api/reset-password", resetPasswordRoute);
   })
   .catch((error) => console.error("MongoDB connection error:", error));
 

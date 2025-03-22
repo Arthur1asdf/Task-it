@@ -1,6 +1,6 @@
 /*
  * Run this script to update existing users
- * add streaks to their account
+ * to add streaks to their account
 */
 
 const mongoose = require("mongoose");
