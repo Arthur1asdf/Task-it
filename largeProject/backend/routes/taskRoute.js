@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const { ObjectId } = require("mongodb");
 
 module.exports = (db) => {
-  const User = db.collection("users");
-  const Task = db.collection("tasks");
-
+  const User = db.collection("User");
+  const Task = db.collection("User-Tasks");
   // Get Week Route: fetches tasks for the week based on a reference date
   router.get("/get-week", async (req, res) => {
     try {
@@ -49,79 +49,103 @@ module.exports = (db) => {
   });
 
   //do not uncomment yet I need to create the date stuff first
-  //   // Add Task Route
-  //   router.post("/add-task", async (req, res) => {
-  //     try {
-  //       const { userId, taskName, taskDescription } = req.body;
-
-  //       // Validate input
-  //       if (!userId || !taskName || !taskDescription) {
-  //         return res.status(400).json({ message: "All fields are required" });
-  //       }
-
-  //       // Check if user exists
-  //       const user = await User.findOne({ _id: userId });
-  //       if (!user) {
-  //         return res.status(404).json({ message: "User not found" });
-  //       }
-
-  //       // Create new task
-  //       const newTask = {
-  //         userId,
-  //         name: taskName,
-  //         description: taskDescription,
-  //         completed: false,
-  //         createdAt: new Date(),
-  //       };
-
-  //       await Task.insertOne(newTask);
-  //       res.status(201).json({ message: "Task added successfully", task: newTask });
-  //     } catch (error) {
-  //       console.error("Error adding task:", error);
-  //       res.status(500).json({ message: "Internal Server Error" });
-  //     }
-  //   });
-  // Complete Task Route
-  router.post("/complete-task", async (req, res) => {
+  // Add Task Route
+  router.post("/add-task", async (req, res) => {
     try {
-      const { userId, taskId } = req.body;
+      //task dates must be an array even if it has only one date
+      const { userId, taskName, taskDates } = req.body;
 
-      const user = await User.findOne({ _id: userId });
-      const task = await Task.findOne({ _id: taskId });
-
-      if (!user || !task) {
-        return res.status(404).json({ message: "Task or user not found" });
+      // Validate input: userId, taskName, and taskDates (non-empty array) are required
+      if (!userId || !taskName || !Array.isArray(taskDates) || taskDates.length === 0) {
+        return res.status(400).json({ message: "All fields are required, including at least one date" });
       }
 
-      const today = new Date();
-      const lastActivity = user.lastActivity ? new Date(user.lastActivity) : null;
+      const _id = new ObjectId(String(userId));
+      const user = await User.findOne({ _id });
 
-      let globalStreak = user.globalStreak || 0;
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-      if (lastActivity) {
-        const diff = Math.floor((today - lastActivity) / (1000 * 60 * 60 * 24));
-
-        if (diff === 1) {
-          // Streak continues
-          globalStreak += 1;
-        } else if (diff > 1) {
-          // Streak resets
-          globalStreak = 1;
+      // Validate each date string by attempting to create a Date object.
+      // Ensure that dates are valid ISO date strings.
+      const validDates = taskDates.map((dateStr) => {
+        const dateObj = new Date(dateStr);
+        if (isNaN(dateObj)) {
+          throw new Error(`Invalid date format: ${dateStr}`);
         }
-      } else {
-        // First-time completion
-        globalStreak = 1;
+        return dateStr;
+      });
+
+      const duplicateTask = await Task.findOne({
+        userId,
+        name: taskName,
+        //$in looks through all the querys
+        taskDates: { $in: validDates },
+      });
+
+      if (duplicateTask) {
+        return res.status(400).json({ message: "Task with this name already exists on one or more of the selected dates" });
       }
 
-      // Update the user document
-      await User.updateOne({ _id: userId }, { $set: { globalStreak, lastActivity: today } });
+      // Create new task document with the provided dates.
+      // This creates a single task document that stores an array of dates.
+      const newTask = {
+        userId,
+        name: taskName,
+        taskDates: validDates, // Array of dates in "YYYY-MM-DD" format
+        isCompleteted: false,
+        createdAt: new Date(),
+      };
 
-      res.json({ success: true, globalStreak });
+      await Task.insertOne(newTask);
+      res.status(201).json({ message: "Task added successfully", task: newTask });
     } catch (error) {
-      console.error("Error completing task:", error);
+      console.error("Error adding task:", error);
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
+  // // Complete Task Route
+  // router.post("/complete-task", async (req, res) => {
+  //   try {
+  //     const { userId, taskId } = req.body;
+
+  //     const user = await User.findOne({ _id: userId });
+  //     const task = await Task.findOne({ _id: taskId });
+
+  //     if (!user || !task) {
+  //       return res.status(404).json({ message: "Task or user not found" });
+  //     }
+
+  //     const today = new Date();
+  //     const lastActivity = user.lastActivity ? new Date(user.lastActivity) : null;
+
+  //     let globalStreak = user.globalStreak || 0;
+
+  //     if (lastActivity) {
+  //       const diff = Math.floor((today - lastActivity) / (1000 * 60 * 60 * 24));
+
+  //       if (diff === 1) {
+  //         // Streak continues
+  //         globalStreak += 1;
+  //       } else if (diff > 1) {
+  //         // Streak resets
+  //         globalStreak = 1;
+  //       }
+  //     } else {
+  //       // First-time completion
+  //       globalStreak = 1;
+  //     }
+
+  //     // Update the user document
+  //     await User.updateOne({ _id: userId }, { $set: { globalStreak, lastActivity: today } });
+
+  //     res.json({ success: true, globalStreak });
+  //   } catch (error) {
+  //     console.error("Error completing task:", error);
+  //     res.status(500).json({ message: "Internal Server Error" });
+  //   }
+  // });
 
   return router;
 };
