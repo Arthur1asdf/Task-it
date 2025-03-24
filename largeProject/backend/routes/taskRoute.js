@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { ObjectId } = require("mongodb");
+const { ObjectId, ReturnDocument } = require("mongodb");
 
 module.exports = (db) => {
   const User = db.collection("User");
@@ -93,7 +93,7 @@ module.exports = (db) => {
         userId,
         name: taskName,
         taskDates: validDates, // Array of dates in "YYYY-MM-DD" format
-        isCompleteted: false,
+        isCompleted: false,
         createdAt: new Date(),
       };
 
@@ -105,6 +105,7 @@ module.exports = (db) => {
     }
   });
 
+  //get tasks route here
   router.get("/get-tasks", async (req, res) => {
     try {
       // http://localhost:5000/api/taskRoute/get-tasks?userId=67bfe1d7601fd1ede10e5e71&taskDate=2025-03-25
@@ -118,7 +119,8 @@ module.exports = (db) => {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-
+      //.find returns cursor so we need to convert it to an array
+      //tldr cursor looks ugly asf and not ez to work with, so array better
       const tasks = await Task.find({ userId, taskDates: { $in: [taskDate] } }).toArray();
       console.log(tasks);
       res.json({ tasks });
@@ -163,6 +165,45 @@ module.exports = (db) => {
   });
 
   // task completion route here
+  router.put("/complete-task", async (req, res) => {
+    try {
+      const { userId, taskId, isCompleted } = req.body;
+
+      if (!userId || !taskId) {
+        return res.status(400).json({ message: "User ID and task ID are required" });
+      }
+
+      const _id = new ObjectId(String(userId));
+      const user = await User.findOne({ _id });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      //userId is not objectId when stored in the database when we get it from a task
+      const idForTask = new ObjectId(String(taskId));
+      const updatedTask = await Task.findOneAndUpdate(
+        { _id: idForTask },
+        { $set: { isCompleted } },
+        //also using returnDocument instead of returnOriginal because updated
+        //task.isCompleted was returning the prev value instead of the updated value
+        { returnDocument: "after" } //comment is here because of prettier
+      );
+
+      if (!updatedTask) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+
+      if (isCompleted) {
+        res.json({ message: "Task marked as completed", taskCompletion: updatedTask.isCompleted });
+      }
+      if (!isCompleted) {
+        res.json({ message: "Task marked as not completed", taskCompletion: updatedTask.isCompleted });
+      }
+    } catch (error) {
+      console.error("Error completing task:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
 
   return router;
 };
