@@ -48,7 +48,6 @@ module.exports = (db) => {
     }
   });
 
-  //do not uncomment yet I need to create the date stuff first
   // Add Task Route
   router.post("/add-task", async (req, res) => {
     try {
@@ -105,47 +104,64 @@ module.exports = (db) => {
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
-  // // Complete Task Route
-  // router.post("/complete-task", async (req, res) => {
-  //   try {
-  //     const { userId, taskId } = req.body;
 
-  //     const user = await User.findOne({ _id: userId });
-  //     const task = await Task.findOne({ _id: taskId });
+  router.get("/get-tasks", async (req, res) => {
+    try {
+      // http://localhost:5000/api/taskRoute/get-tasks?userId=67bfe1d7601fd1ede10e5e71&taskDate=2025-03-25
+      const { userId, taskDate } = req.query;
+      if (!userId || !taskDate) {
+        return res.status(400).json({ message: "User ID is required and Task date" });
+      }
 
-  //     if (!user || !task) {
-  //       return res.status(404).json({ message: "Task or user not found" });
-  //     }
+      const _id = new ObjectId(String(userId));
+      const user = await User.findOne({ _id });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-  //     const today = new Date();
-  //     const lastActivity = user.lastActivity ? new Date(user.lastActivity) : null;
+      const tasks = await Task.find({ userId, taskDates: { $in: [taskDate] } }).toArray();
+      console.log(tasks);
+      res.json({ tasks });
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
 
-  //     let globalStreak = user.globalStreak || 0;
+  // edit task
+  router.put("/edit-task", async (req, res) => {
+    try {
+      const { userId, taskId, taskName, taskDates } = req.body;
 
-  //     if (lastActivity) {
-  //       const diff = Math.floor((today - lastActivity) / (1000 * 60 * 60 * 24));
+      if (!userId || !taskId || !taskName || !Array.isArray(taskDates) || taskDates.length === 0) {
+        return res.status(400).json({ message: "All fields are required" });
+      }
 
-  //       if (diff === 1) {
-  //         // Streak continues
-  //         globalStreak += 1;
-  //       } else if (diff > 1) {
-  //         // Streak resets
-  //         globalStreak = 1;
-  //       }
-  //     } else {
-  //       // First-time completion
-  //       globalStreak = 1;
-  //     }
+      const _id = new ObjectId(String(userId));
+      const user = await User.findOne({ _id });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-  //     // Update the user document
-  //     await User.updateOne({ _id: userId }, { $set: { globalStreak, lastActivity: today } });
+      const validDates = taskDates.map((dateStr) => {
+        const dateObj = new Date(dateStr);
+        if (isNaN(dateObj)) {
+          throw new Error(`Invalid date format: ${dateStr}`);
+        }
+        return dateStr;
+      });
 
-  //     res.json({ success: true, globalStreak });
-  //   } catch (error) {
-  //     console.error("Error completing task:", error);
-  //     res.status(500).json({ message: "Internal Server Error" });
-  //   }
-  // });
+      const updatedTask = await Task.findOneAndUpdate({ _id: new ObjectId(taskId), userId }, { $set: { name: taskName, taskDates: validDates } }, { returnOriginal: false });
 
+      if (!updatedTask.value) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+
+      res.json({ message: "Task updated successfully", task: updatedTask.value });
+    } catch (error) {
+      console.error("Error updating task:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
   return router;
 };
