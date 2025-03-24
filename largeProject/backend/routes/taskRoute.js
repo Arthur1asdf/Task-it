@@ -73,7 +73,7 @@ module.exports = (db) => {
         if (isNaN(dateObj)) {
           throw new Error(`Invalid date format: ${dateStr}`);
         }
-        return dateStr;
+        return dateObj.toISOString().slice(0, 10);
       });
 
       const duplicateTask = await Task.findOne({
@@ -201,6 +201,27 @@ module.exports = (db) => {
       }
     } catch (error) {
       console.error("Error completing task:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+  //task deletion route here
+  router.delete("/delete-task", async (req, res) => {
+    try {
+      const { userId, taskId } = req.body;
+
+      if (!userId || !taskId) {
+        return res.status(400).json({ message: "User ID and task ID are required" });
+      }
+
+      const _id = new ObjectId(String(taskId));
+      const task = await Task.findOne({ _id });
+      const deleteTask = await Task.deleteOne({ task });
+      if (!deleteTask) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+      res.json({ message: "Task deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting task:", error);
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
