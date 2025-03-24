@@ -128,13 +128,13 @@ module.exports = (db) => {
     }
   });
 
-  // edit task
+  // edit task route here
   router.put("/edit-task", async (req, res) => {
     try {
-      const { userId, taskId, taskName, taskDates } = req.body;
+      const { userId, taskId, taskName } = req.body;
 
-      if (!userId || !taskId || !taskName || !Array.isArray(taskDates) || taskDates.length === 0) {
-        return res.status(400).json({ message: "All fields are required" });
+      if (!userId || !taskId || !taskName) {
+        return res.status(400).json({ message: "User ID, task ID, and task name are required" });
       }
 
       const _id = new ObjectId(String(userId));
@@ -143,17 +143,15 @@ module.exports = (db) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const validDates = taskDates.map((dateStr) => {
-        const dateObj = new Date(dateStr);
-        if (isNaN(dateObj)) {
-          throw new Error(`Invalid date format: ${dateStr}`);
-        }
-        return dateStr;
-      });
+      //userId is not objectId when stored in the database when we get it from a task
+      const idForTask = new ObjectId(String(taskId));
+      const updatedTask = await Task.findOneAndUpdate(
+        { _id: idForTask },
+        { $set: { name: taskName } },
+        { returnOriginal: false } // comment is here becasuse prettier being a bitch
+      );
 
-      const updatedTask = await Task.findOneAndUpdate({ _id: new ObjectId(taskId), userId }, { $set: { name: taskName, taskDates: validDates } }, { returnOriginal: false });
-
-      if (!updatedTask.value) {
+      if (updatedTask._id.toString() !== taskId) {
         return res.status(404).json({ message: "Task not found" });
       }
 
@@ -163,5 +161,8 @@ module.exports = (db) => {
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
+
+  // task completion route here
+
   return router;
 };
