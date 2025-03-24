@@ -214,9 +214,8 @@ module.exports = (db) => {
       }
 
       const _id = new ObjectId(String(taskId));
-      const task = await Task.findOne({ _id });
-      const deleteTask = await Task.deleteOne({ task });
-      if (!deleteTask) {
+      const deleteTask = await Task.deleteOne({ _id });
+      if (deleteTask === 0) {
         return res.status(404).json({ message: "Task not found" });
       }
       res.json({ message: "Task deleted successfully" });
