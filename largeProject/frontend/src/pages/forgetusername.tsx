@@ -10,14 +10,14 @@ const ForgetUsername: React.FC = () => {
   // Handle form submission (for demonstration purposes, you can integrate your API here)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setRgbColor("rgb(85, 70, 60)"); // fuck you judy just use a regular ass const varialbe why the fuck are you using a useState dont touch this
+    setRgbColor("rgb(85, 70, 60)"); // Keep color
 
     try {
       // API call to trigger sending username functionality
       console.log("Your username was sent to:", email);
 
       // Simulating successful username submission
-      alert("If this email is registered, a email with your username info will be sent.");
+      alert("If this email is registered, an email with your username info will be sent.");
       navigate("/login"); // Redirect back to login page after submission
     } catch (error) {
       console.error("Error:", error);
@@ -26,17 +26,25 @@ const ForgetUsername: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-cover bg-center relative" style={{ backgroundImage: "url('https://i.ibb.co/5gPp8JnX/Untitled115-20250320155538.png')" }}>
-      {/* Invisible Box to group all elements */}
-      <div className="absolute left-[50%] top-[28%] translate-x-[-50%] flex flex-col items-center" style={{ color: rgbColor }}>
+    <div
+      className="h-screen w-full bg-cover bg-center relative"
+      style={{ backgroundImage: "url('https://i.ibb.co/5gPp8JnX/Untitled115-20250320155538.png')" }}
+    >
+      {/* Box to group all elements */}
+      <div
+        className="absolute left-[50%] top-[28%] translate-x-[-50%] flex flex-col items-center bg-[#EFDAAE] p-8 rounded-lg w-full sm:w-96 lg:w-[400px]"
+        style={{
+          color: rgbColor,
+        }}
+      >
         {/* Forget Username Title */}
-        <h2 className="text-3xl font-bold mb-2 text-center" style={{ color: rgbColor }}>
+        <h2 className="text-4xl font-bold mb-2 text-center" style={{ color: rgbColor }}>
           Forgot Username
         </h2>
 
         {/* Instructions Line */}
         <p
-          className="text-sm mb-4 text-center"
+          className="text-lg mb-4 text-center"
           style={{
             color: rgbColor,
             maxWidth: "375px",
@@ -54,7 +62,7 @@ const ForgetUsername: React.FC = () => {
             <input
               type="email"
               placeholder="Enter your email"
-              className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
+              className="w-full text-left text-2xl bg-transparent border-b focus:outline-none px-2"
               style={{
                 borderColor: rgbColor,
                 maxWidth: "350px",
@@ -68,7 +76,7 @@ const ForgetUsername: React.FC = () => {
           <div className="w-full flex justify-center mt-4">
             <button
               type="submit"
-              className="text-lg font-bold bg-transparent hover:underline px-4 py-2"
+              className="text-2xl font-bold bg-transparent hover:underline px-4 py-2"
               style={{
                 color: rgbColor,
               }}
@@ -80,7 +88,12 @@ const ForgetUsername: React.FC = () => {
 
         {/* Back to Login Button with Underline */}
         <div className="w-full flex justify-center mt-4">
-          <button className="text-lg font-bold bg-transparent hover:underline px-4 py-2" onClick={() => navigate("/login")} type="button" style={{ color: rgbColor }}>
+          <button
+            className="text-2xl font-bold bg-transparent hover:underline px-4 py-2"
+            onClick={() => navigate("/login")}
+            type="button"
+            style={{ color: rgbColor }}
+          >
             Back to Login
           </button>
         </div>
