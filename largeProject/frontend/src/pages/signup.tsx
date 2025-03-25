@@ -82,12 +82,12 @@ const SignUp = () => {
     >
       <div className="absolute inset-x-0 top-[20%] flex items-center justify-center"> {/* Adjusted top value */}
         <div
-          className="bg-[rgb(238,225,199)] bg-opacity-80 p-8 rounded-lg shadow-lg w-full sm:w-96 lg:w-1/3 xl:w-1/4"
+          className="bg-[rgb(238,225,199)] bg-opacity-80 p-8 rounded-lg shadow-lg w-full sm:w-96 lg:w-1/3 xl:w-[450px]"
           style={{
             color: rgbColor,
           }}
         >
-          <h2 className="text-3xl font-bold mb-4 text-center" style={{ color: rgbColor }}>
+          <h2 className="text-4xl font-bold mb-4 text-center" style={{ color: rgbColor }}>
             Sign Up
           </h2>
 
@@ -95,7 +95,7 @@ const SignUp = () => {
             <input
               type="text"
               placeholder="Username"
-              className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
+              className="w-full text-left text-2xl bg-transparent border-b focus:outline-none px-2"
               style={{
                 borderColor: rgbColor,
                 color: rgbColor,
@@ -106,7 +106,7 @@ const SignUp = () => {
             <input
               type="email"
               placeholder="Email"
-              className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
+              className="w-full text-left text-2xl bg-transparent border-b focus:outline-none px-2"
               style={{
                 borderColor: rgbColor,
                 color: rgbColor,
@@ -118,7 +118,7 @@ const SignUp = () => {
               <input
                 type="password"
                 placeholder="Password"
-                className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
+                className="w-full text-left text-2xl bg-transparent border-b focus:outline-none px-2"
                 style={{
                   borderColor: rgbColor,
                   color: rgbColor,
@@ -132,7 +132,7 @@ const SignUp = () => {
 
               {/* Larger popup to the side for password requirements */}
               <div
-                className="absolute top-[200px] center bg-white p-6 shadow-lg w-[300px] rounded-lg left-1/2 transform -translate-x-1/2"
+                className="absolute top-[250px] center bg-white p-6 shadow-lg w-[380px] rounded-lg left-1/2 transform -translate-x-1/2"
                 style={{ display: password ? "block" : "none" }}
               >
                 <h3 className="font-semibold text-lg mb-2">Password Requirements</h3>
@@ -150,10 +150,10 @@ const SignUp = () => {
                 </div>
               </div>
             </div>
-            {passwordError && <p className="text-red-500 text-lg">{passwordError}</p>} {/* Show error message */}
+            {passwordError && <p className="text-red-500 text-center mt-2 text-lg">{passwordError}</p>} {/* Show error message */}
             <div className="w-full flex justify-center gap-4 mt-4">
               <button
-                className="text-lg font-bold bg-transparent hover:underline"
+                className="text-2xl font-bold bg-transparent hover:underline"
                 onClick={goToLogin}
                 type="button"
               >
@@ -161,7 +161,7 @@ const SignUp = () => {
               </button>
               <button
                 type="submit"
-                className="text-lg font-bold bg-transparent hover:underline"
+                className="text-2xl font-bold bg-transparent hover:underline"
                 style={{
                   color: rgbColor,
                 }}
