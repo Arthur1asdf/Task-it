@@ -224,6 +224,33 @@ module.exports = (db) => {
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
+//search task route
+router.get("/search-tasks", async (req, res) => {
+  try {
+    const { query, userId } = req.query;
 
+    
+    if (!query) {
+      return res.status(400).json({ message: "Search is required" });
+    }
+
+    // case sensitibve match
+    const searchCriteria = {
+      name: { $regex: query, $options: "i" } 
+    };
+
+    if (userId) {
+      searchCriteria.userId = userId;
+    }
+
+     
+    const tasks = await Task.find(searchCriteria).toArray();
+
+    res.status(200).json({ tasks });
+  } catch (error) {
+    console.error("Error searching tasks:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
   return router;
 };
