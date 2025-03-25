@@ -49,9 +49,8 @@ const SignUp = () => {
     if (!validatePassword(password)) {
       return; // Don't submit if password is invalid
     }
-    setRgbColor("rgb(85, 70, 60)"); // fuck you judy just use a regular ass const varialbe why the fuck are you using a useState dont touch this
+    setRgbColor("rgb(85, 70, 60)"); // Keep color
 
-    console.log("I HANDLING THINGS");
     try {
       const response = await fetch("http://146.190.218.123:5000/api/register/register", {
         method: "POST",
@@ -77,93 +76,101 @@ const SignUp = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-cover bg-center relative" style={{ backgroundImage: "url('https://i.ibb.co/21hGpH7M/Login-Door.png')" }}>
-      <div
-        className="absolute left-[50%] top-[22%] translate-x-[-50%] flex flex-col items-center"
-        style={{
-          color: rgbColor,
-        }}
-      >
-        <h2 className="text-3xl font-bold mb-2 text-center" style={{ color: rgbColor }}>
-          Sign Up
-        </h2>
+    <div
+      className="h-screen w-full bg-cover bg-center relative"
+      style={{ backgroundImage: "url('https://i.ibb.co/qL38wPB9/5339046-C-951-A-4339-8-FD9-E82-A1-C511504.png')" }}
+    >
+      <div className="absolute inset-x-0 top-[20%] flex items-center justify-center"> {/* Adjusted top value */}
+        <div
+          className="bg-[rgb(238,225,199)] bg-opacity-80 p-8 rounded-lg shadow-lg w-full sm:w-96 lg:w-1/3 xl:w-1/4"
+          style={{
+            color: rgbColor,
+          }}
+        >
+          <h2 className="text-3xl font-bold mb-4 text-center" style={{ color: rgbColor }}>
+            Sign Up
+          </h2>
 
-        <form className="w-full flex flex-col gap-1" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Username"
-            className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
-            style={{
-              borderColor: rgbColor,
-              color: rgbColor,
-            }}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
-            style={{
-              borderColor: rgbColor,
-              color: rgbColor,
-            }}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <div className="relative w-full">
+          <form className="w-full flex flex-col gap-3" onSubmit={handleSubmit}>
             <input
-              type="password"
-              placeholder="Password"
+              type="text"
+              placeholder="Username"
               className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
               style={{
                 borderColor: rgbColor,
                 color: rgbColor,
               }}
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                validatePassword(e.target.value);
-              }}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
-
-            {/* Larger popup to the side for password requirements */}
-            <div className="absolute top-[-90px] right-[-450px] bg-white p-6 shadow-lg w-[300px] rounded-lg" style={{ display: password ? "block" : "none" }}>
-              <h3 className="font-semibold text-lg mb-2">Password Requirements</h3>
-              <div className={`flex items-center ${requirements.length ? "text-green-500" : "text-red-500"}`}>{requirements.length ? "✔️" : "❌"} Minimum 8 characters</div>
-              <div className={`flex items-center ${requirements.uppercase ? "text-green-500" : "text-red-500"}`}>{requirements.uppercase ? "✔️" : "❌"} At least one uppercase letter</div>
-              <div className={`flex items-center ${requirements.lowercase ? "text-green-500" : "text-red-500"}`}>{requirements.lowercase ? "✔️" : "❌"} At least one lowercase letter</div>
-              <div className={`flex items-center ${requirements.number ? "text-green-500" : "text-red-500"}`}>{requirements.number ? "✔️" : "❌"} At least one number</div>
-            </div>
-          </div>
-          {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>} {/* Show error message */}
-          <div className="w-full flex justify-center mt-2">
-            <button
-              type="submit"
-              className="text-lg font-bold bg-transparent hover:underline"
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
               style={{
+                borderColor: rgbColor,
                 color: rgbColor,
               }}
-              disabled={!!passwordError} // Disable the button if there's a password error
-            >
-              Sign Up
-            </button>
-          </div>
-        </form>
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <div className="relative w-full">
+              <input
+                type="password"
+                placeholder="Password"
+                className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
+                style={{
+                  borderColor: rgbColor,
+                  color: rgbColor,
+                }}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  validatePassword(e.target.value);
+                }}
+              />
 
-        <div className="w-full flex justify-center mt-2">
-          <button
-            className="text-black font-bold text-lg px-4 py-2 rounded-md shadow-lg transform rotate-3 hover:rotate-0 transition-all"
-            style={{
-              fontFamily: "'Patrick Hand', cursive",
-              backgroundColor: "#FAEC91",
-              boxShadow: "4px 4px 10px rgba(0,0,0,0.3)",
-            }}
-            onClick={goToLogin}
-            type="button"
-          >
-            Log In
-          </button>
+              {/* Larger popup to the side for password requirements */}
+              <div
+                className="absolute top-[200px] center bg-white p-6 shadow-lg w-[300px] rounded-lg left-1/2 transform -translate-x-1/2"
+                style={{ display: password ? "block" : "none" }}
+              >
+                <h3 className="font-semibold text-lg mb-2">Password Requirements</h3>
+                <div className={`flex items-center ${requirements.length ? "text-green-500" : "text-red-500"}`}>
+                  {requirements.length ? "✔️" : "❌"} Minimum 8 characters
+                </div>
+                <div className={`flex items-center ${requirements.uppercase ? "text-green-500" : "text-red-500"}`}>
+                  {requirements.uppercase ? "✔️" : "❌"} At least one uppercase letter
+                </div>
+                <div className={`flex items-center ${requirements.lowercase ? "text-green-500" : "text-red-500"}`}>
+                  {requirements.lowercase ? "✔️" : "❌"} At least one lowercase letter
+                </div>
+                <div className={`flex items-center ${requirements.number ? "text-green-500" : "text-red-500"}`}>
+                  {requirements.number ? "✔️" : "❌"} At least one number
+                </div>
+              </div>
+            </div>
+            {passwordError && <p className="text-red-500 text-lg">{passwordError}</p>} {/* Show error message */}
+            <div className="w-full flex justify-center gap-4 mt-4">
+              <button
+                className="text-lg font-bold bg-transparent hover:underline"
+                onClick={goToLogin}
+                type="button"
+              >
+                Log In
+              </button>
+              <button
+                type="submit"
+                className="text-lg font-bold bg-transparent hover:underline"
+                style={{
+                  color: rgbColor,
+                }}
+                disabled={!!passwordError} // Disable the button if there's a password error
+              >
+                Sign Up
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
