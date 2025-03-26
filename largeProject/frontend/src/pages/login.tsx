@@ -7,7 +7,7 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rgbColor, setRgbColor] = useState("rgb(85, 70, 60)"); // Default RGB color
-  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setRgbColor("rgb(85, 70, 60)"); // Regular variable for color
@@ -36,34 +36,47 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-full bg-cover bg-center relative" style={{ backgroundImage: "url('https://i.ibb.co/qL38wPB9/5339046-C-951-A-4339-8-FD9-E82-A1-C511504.png')" }}>
+    <div
+      className="h-screen w-full bg-fixed bg-center relative overflow-auto"
+      style={{
+        backgroundImage: "url('https://media.discordapp.net/attachments/903014510376398889/1354260901318103232/Untitled118_20250325210700.png?ex=67e4a53f&is=67e353bf&hm=32b7b103356959c718d793b5758d1167e3a5ccf23bb87b0a7bf8b660374385d4&=&format=webp&quality=lossless&width=1182&height=665')",
+        backgroundSize: "cover",
+      }}
+    >
       <div
-        className="absolute left-[50%] top-[22%] translate-x-[-50%] flex flex-col items-center justify-center"
-        style={{ color: rgbColor }}
+        className="absolute left-[50%] top-[20%] translate-x-[-50%] flex flex-col items-center justify-center"
       >
-        {/* Login Box */}
-        <div className="bg-[rgb(238,225,199)] bg-opacity-80 p-10 rounded-lg shadow-lg w-full sm:w-96 md:w-[500px] lg:w-[600px] xl:w-[450px]">
+        <div
+          className="w-[90vw] max-w-[500px] h-auto flex flex-col items-center justify-center p-4"
+          style={{
+            backgroundImage: "url('https://i.ibb.co/CKc322Wc/Untitled118-20250325211747.png')",
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            aspectRatio: "16/9",
+          }}
+        >
           {/* Login Title */}
-          <h2 className="text-4xl font-bold mb-4 text-center" style={{ color: rgbColor }}>
+          <h2 className="text-xl font-bold mb-3 text-center" style={{ color: rgbColor, maxFontSize: "24pt" }}>
             Login
           </h2>
 
           {/* Login Form */}
-          <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
+          <form className="w-3/4 flex flex-col gap-3" onSubmit={handleSubmit}>
             {/* Username Input */}
             <input
               type="username"
               placeholder="Username"
-              className="w-full text-left text-2xl bg-transparent border-b focus:outline-none px-2"
-              style={{ borderColor: rgbColor, color: rgbColor }}
+              className="w-full text-left text-sm bg-transparent border-b focus:outline-none px-2"
+              style={{ borderColor: rgbColor, color: rgbColor, fontSize: "clamp(12px, 1rem, 24pt)" }}
               onChange={(e) => setUsername(e.target.value)}
             />
             {/* Forgot Username Link */}
             <div className="w-full text-right">
               <button
-                className="text-sm hover:underline"
-                style={{ color: rgbColor}}
-                onClick={() => navigate("/forgetusername")} // Navigate to Forget Username
+                className="text-xs hover:underline"
+                style={{ color: rgbColor }}
+                onClick={() => navigate("/forgetusername")}
                 type="button"
               >
                 Forgot Username?
@@ -74,16 +87,16 @@ const Login: React.FC = () => {
             <input
               type="password"
               placeholder="Password"
-              className="w-full text-left text-2xl bg-transparent border-b focus:outline-none px-2"
-              style={{ borderColor: rgbColor, color: rgbColor }}
+              className="w-full text-left text-sm bg-transparent border-b focus:outline-none px-2"
+              style={{ borderColor: rgbColor, color: rgbColor, fontSize: "clamp(12px, 1rem, 24pt)" }}
               onChange={(e) => setPassword(e.target.value)}
             />
             {/* Forgot Password Link */}
             <div className="w-full text-right">
               <button
-                className="text-sm hover:underline"
+                className="text-xs hover:underline"
                 style={{ color: rgbColor }}
-                onClick={() => navigate("/forgetpassword")} // Navigate to Forget Password
+                onClick={() => navigate("/forgetpassword")}
                 type="button"
               >
                 Forgot Password?
@@ -91,26 +104,26 @@ const Login: React.FC = () => {
             </div>
 
             {/* Button Container */}
-            <div className="w-full flex justify-between mt-4">
-  {/* Enter Button */}
-  <button
-    type="submit"
-    className="text-2xl font-bold bg-transparent hover:underline w-full sm:w-[48%]"
-    style={{ color: rgbColor }}
-  >
-    Enter
-  </button>
+            <div className="w-full flex justify-between mt-3">
+              {/* Enter Button */}
+              <button
+                type="submit"
+                className="text-sm font-bold bg-transparent hover:underline w-full sm:w-[48%]"
+                style={{ color: rgbColor, fontSize: "clamp(12px, 1rem, 24pt)" }}
+              >
+                Enter
+              </button>
 
-  {/* Sign Up Button */}
-  <button
-    className="text-2xl font-bold bg-transparent hover:underline w-full sm:w-[48%]"
-    onClick={() => navigate("/signup")}
-    type="button"
-  >
-    Sign Up
-  </button>
-</div>
-
+              {/* Sign Up Button */}
+              <button
+                className="text-sm font-bold bg-transparent hover:underline w-full sm:w-[48%]"
+                onClick={() => navigate("/signup")}
+                type="button"
+                style={{ fontSize: "clamp(12px, 1rem, 24pt)" }}
+              >
+                Sign Up
+              </button>
+            </div>
           </form>
         </div>
       </div>
