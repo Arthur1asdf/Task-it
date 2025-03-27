@@ -2,7 +2,7 @@
 
 const express = require("express");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
+const sendEmail = require("../utils/emailService");
 
 const router = express.Router();
 
@@ -35,13 +35,3 @@ module.exports = (db) => {
     
     return router;
 };
-
-// helper function to send emails
-async function sendEmail(to, subject, text) {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-    });
-
-    await transporter.sendMail({ from: process.env.EMAIL_USER, to, subject, text });
-}
