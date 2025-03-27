@@ -194,11 +194,61 @@ module.exports = (db) => {
       }
 
       if (isCompleted) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Get user's last activity
+        const user = await User.findOne({ _id: new ObjectId(String(userId)) });
+        const lastActivity = user.lastActivity ? new Date(user.lastActivity) : null;
+
+        let newStreak;
+        if (!lastActivity) {
+          // No previous activity—start a new streak.
+          newStreak = 1;
+        } else {
+          // Create a Date for yesterday.
+          const yesterday = new Date(today);
+          yesterday.setDate(yesterday.getDate() - 1);
+
+          // Check if lastActivity is exactly yesterday (ignoring time).
+          if (lastActivity.getFullYear() === yesterday.getFullYear() && lastActivity.getMonth() === yesterday.getMonth() && lastActivity.getDate() === yesterday.getDate()) {
+            // Continue the streak.
+            newStreak = user.streak + 1;
+          } else {
+            // If the last activity is not yesterday, reset the streak.
+            newStreak = 1;
+          }
+        }
+
+        await User.updateOne({ _id: new ObjectId(String(userId)) }, { $set: { lastActivity: new Date(), streak: newStreak } });
         res.json({ message: "Task marked as completed", taskCompletion: updatedTask.isCompleted });
       }
-      if (!isCompleted) {
-        res.json({ message: "Task marked as not completed", taskCompletion: updatedTask.isCompleted });
-      }
+
+      // removing not completed feature
+      // if (!isCompleted) {
+      //   // Then check if any tasks remain completed today for the user:
+      //   const today = new Date();
+      //   today.setHours(0, 0, 0, 0);
+      //   const tomorrow = new Date(today);
+      //   tomorrow.setDate(tomorrow.getDate() + 1);
+
+      //   const remainingCompleted = await Task.find({
+      //     userId,
+      //     isCompleted: true,
+      //     createdAt: { $gte: today, $lt: tomorrow }, // or another date field if you track completedAt
+      //   }).toArray();
+
+      //   if (remainingCompleted.length === 0) {
+      //     // No tasks completed today—set lastActivity to yesterday (or clear it)
+      //     const yesterday = new Date(today);
+      //     yesterday.setDate(yesterday.getDate() - 1);
+      //     await User.updateOne(
+      //       { _id: new ObjectId(String(userId)) },
+      //       { $set: { lastActivity: yesterday, streak: 0 } } // or adjust the streak as needed
+      //     );
+      //   }
+      //   res.json({ message: "Task marked as not completed", taskCompletion: updatedTask.isCompleted });
+      // }
     } catch (error) {
       console.error("Error completing task:", error);
       res.status(500).json({ message: "Internal Server Error" });
@@ -224,33 +274,51 @@ module.exports = (db) => {
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
-//search task route
-router.get("/search-tasks", async (req, res) => {
-  try {
-    const { query, userId } = req.query;
 
-    
-    if (!query) {
-      return res.status(400).json({ message: "Search is required" });
+  router.get("/streaks", async (req, res) => {
+    try {
+      const { userId } = req.query;
+      if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+      const _id = new ObjectId(String(userId));
+      const user = await User.findOne({ _id });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json({ streak: user.streak || 0, lastActivity: user.lastActivity });
+    } catch (error) {
+      console.error("Error fetching streaks:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
+  });
 
-    // case sensitibve match
-    const searchCriteria = {
-      name: { $regex: query, $options: "i" } 
-    };
+  //search task route
+  router.get("/search-tasks", async (req, res) => {
+    try {
+      const { query, userId } = req.query;
 
-    if (userId) {
-      searchCriteria.userId = userId;
+      if (!query) {
+        return res.status(400).json({ message: "Search is required" });
+      }
+
+      // case sensitibve match
+      const searchCriteria = {
+        name: { $regex: query, $options: "i" },
+      };
+
+      if (userId) {
+        searchCriteria.userId = userId;
+      }
+
+      const tasks = await Task.find(searchCriteria).toArray();
+
+      res.status(200).json({ tasks });
+    } catch (error) {
+      console.error("Error searching tasks:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
+  });
 
-     
-    const tasks = await Task.find(searchCriteria).toArray();
-
-    res.status(200).json({ tasks });
-  } catch (error) {
-    console.error("Error searching tasks:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
   return router;
 };
