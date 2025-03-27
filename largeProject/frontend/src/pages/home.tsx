@@ -1,5 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
+import background from "../Images/HomeDesktop/HomeDesktopBackground.png";
+import furniture from "../Images/HomeDesktop/HomeDesktopFurniture.png";
+import calender from "../Images/HomeDesktop/HomeDesktopCalender.png";
+import lamp from "../Images/HomeDesktop/HomeDesktopLamp.png";
+import logout from "../Images/HomeDesktop/HomeDesktopLogout.png";
 
 const Home: React.FC = () => {
   const navigate = useNavigate(); // Hook for navigation
@@ -9,7 +14,7 @@ const Home: React.FC = () => {
       style={{
         width: "100%",
         height: "100vh", // Full height of the viewport
-        backgroundImage: "url('https://media.discordapp.net/attachments/967622742960652298/1353939649650753546/HomeDesktopFull.png?ex=67e422cf&is=67e2d14f&hm=0edd18576dfd3a2cbb7557046e334977adde0cda9a9a9fe4d9f54aeba67eb3f9&=&format=webp&quality=lossless&width=1182&height=665')", // Your image path
+        backgroundImage: `url(${background})`, // Your image path
         backgroundPosition: "absolute",
         backgroundSize: "cover",
         backgroundAttachment: "fixed", // Makes the background scrollable
