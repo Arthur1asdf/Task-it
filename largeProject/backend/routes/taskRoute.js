@@ -225,30 +225,30 @@ module.exports = (db) => {
       }
 
       // removing not completed feature
-      // if (!isCompleted) {
-      //   // Then check if any tasks remain completed today for the user:
-      //   const today = new Date();
-      //   today.setHours(0, 0, 0, 0);
-      //   const tomorrow = new Date(today);
-      //   tomorrow.setDate(tomorrow.getDate() + 1);
+      if (!isCompleted) {
+        // // Then check if any tasks remain completed today for the user:
+        // const today = new Date();
+        // today.setHours(0, 0, 0, 0);
+        // const tomorrow = new Date(today);
+        // tomorrow.setDate(tomorrow.getDate() + 1);
 
-      //   const remainingCompleted = await Task.find({
-      //     userId,
-      //     isCompleted: true,
-      //     createdAt: { $gte: today, $lt: tomorrow }, // or another date field if you track completedAt
-      //   }).toArray();
+        // const remainingCompleted = await Task.find({
+        //   userId,
+        //   isCompleted: true,
+        //   createdAt: { $gte: today, $lt: tomorrow }, // or another date field if you track completedAt
+        // }).toArray();
 
-      //   if (remainingCompleted.length === 0) {
-      //     // No tasks completed today—set lastActivity to yesterday (or clear it)
-      //     const yesterday = new Date(today);
-      //     yesterday.setDate(yesterday.getDate() - 1);
-      //     await User.updateOne(
-      //       { _id: new ObjectId(String(userId)) },
-      //       { $set: { lastActivity: yesterday, streak: 0 } } // or adjust the streak as needed
-      //     );
-      //   }
-      //   res.json({ message: "Task marked as not completed", taskCompletion: updatedTask.isCompleted });
-      // }
+        // if (remainingCompleted.length === 0) {
+        //   // No tasks completed today—set lastActivity to yesterday (or clear it)
+        //   const yesterday = new Date(today);
+        //   yesterday.setDate(yesterday.getDate() - 1);
+        //   await User.updateOne(
+        //     { _id: new ObjectId(String(userId)) },
+        //     { $set: { lastActivity: yesterday, streak: 0 } } // or adjust the streak as needed
+        //   );
+        // }
+        res.json({ message: "Task marked as not completed", taskCompletion: updatedTask.isCompleted });
+      }
     } catch (error) {
       console.error("Error completing task:", error);
       res.status(500).json({ message: "Internal Server Error" });
