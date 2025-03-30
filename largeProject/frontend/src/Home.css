@@ -1,72 +1,81 @@
+import React from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
+import background from "../Images/HomeDesktop/home background 2.png";
+import furniture from "../Images/HomeDesktop/HomeDesktopFurniture.png";
+import calender from "../Images/HomeDesktop/calender.png";
+import lamp from "../Images/HomeDesktop/HomeDesktopLamp.png";
+import logout from "../Images/HomeDesktop/logout.png";
 
-  
-  /* Default positioning */
-  .sticky-note {
-    position: absolute;
-    top: 15%;
-    left: 79%;
-    width: 15vw;
-    max-width: 200px;
-    min-width: 90px;
-    transform: translate(-50%, -50%);
-  }
-  
-  .sticky-note img {
-    width: 60%;
-    height: auto;
-    cursor: pointer;
-  }
-  
-  .calendar {
-    position: absolute;
-    top: 77%;
-    left: 60%;
-    width: 20vw;
-    max-width: 300px;
-    min-width: 120px;
-    transform: translate(-50%, -50%);
-  }
-  
-  .calendar img {
-    width: 120%;
-    height: auto;
-    cursor: pointer;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 1024px) {
-    .sticky-note {
-      top: 10%;
-      left: 75%;
-    }
-  
-    .calendar {
-      top: 70%;
-      left: 55%;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .sticky-note {
-      top: 12%;
-      left: 40%;
-    }
-  
-    .calendar {
-      top: 80%;
-      left: 50%;
-    }
-  }
-  
-  @media (max-width: 375px) {
-    .sticky-note {
-      top: 8%;
-      left: 80%;
-    }
-  
-    .calendar {
-      top: 85%;
-      left: 45%;
-    }
-  }
-  
+const Home: React.FC = () => {
+  const navigate = useNavigate(); // Hook for navigation
+
+  const handleStickyNoteClick = () => {
+    navigate("/logout"); // Navigate to logout when clicking the sticky note
+  };
+
+  const handleCalendarClick = () => {
+    navigate("/calendar"); // Navigate to calendar when clicking the calendar
+  };
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100vh",
+        backgroundImage: `url(${background})`,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: "77%",
+          left: "60%",
+          width: "20vw",
+          maxWidth: "300px",
+          minWidth: "120px",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        <img
+          src={calender}
+          alt="Calendar"
+          onClick={handleCalendarClick} // Navigate to /calendar on click
+          style={{
+            width: "120%",
+            height: "auto",
+            cursor: "pointer",
+          }}
+        />
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          top: "90%",
+          left: "50%",
+          transform: "translateX(-50%)",
+        }}
+      >
+        <img
+          src={logout} // Assuming you have a sticky note or logout image
+          alt="Logout"
+          onClick={handleStickyNoteClick} // Navigate to /logout on click
+          style={{
+            width: "120%",
+            height: "auto",
+            cursor: "pointer",
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default Home;
