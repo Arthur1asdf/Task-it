@@ -4,9 +4,10 @@ import "../index.css";
 import background from "../Images/sticky note.png";
 
 
-const ForgetUsername: React.FC = () => {
+const ResetPassword: React.FC = () => {
   const navigate = useNavigate(); // Hook for navigation
-  const [email, setEmail] = useState(""); // State for email input
+  const [password, setPassword] = useState("");
+  const [conPassword, setConPassword] = useState("");
   const [rgbColor, setRgbColor] = useState("rgb(85, 70, 60)"); // Default RGB color
 
   // Handle form submission (for demonstration purposes, you can integrate your API here)
@@ -14,9 +15,18 @@ const ForgetUsername: React.FC = () => {
     e.preventDefault();
     setRgbColor("rgb(85, 70, 60)"); // Keep color
 
+    if (password == conPassword){
+      alert("Passwords match!");
+      return;
+    }
+    else{
+      alert("Passwords don't match!");
+      return;
+    }
+
     try {
       // API call to trigger sending username functionality
-      console.log("Your username was sent to:", email);
+      console.log("Your username was sent to:");
 
       // Simulating successful username submission
       alert("If this email is registered, an email with your username info will be sent.");
@@ -49,7 +59,7 @@ const ForgetUsername: React.FC = () => {
         >
           {/* Forget Username Title */}
           <h2 className="text-3xl font-bold mb-2 text-center" style={{ color: rgbColor }}>
-            Forgot Username
+            Reset Password
           </h2>
 
           {/* Instructions Line */}
@@ -62,7 +72,7 @@ const ForgetUsername: React.FC = () => {
               textAlign: "center",
             }}
           >
-            Enter your email address and we will send you your username
+            Type in your new password
           </p>
 
           {/* Username reset form */}
@@ -70,15 +80,25 @@ const ForgetUsername: React.FC = () => {
             {/* Email Input */}
             <div className="w-full flex justify-center">
               <input
-                type="email"
-                placeholder="Enter your email"
+                type="password"
+                placeholder="Enter new password"
                 className="w-full text-left text-lg bg-transparent border-b focus:outline-none px-2"
                 style={{
                   borderColor: rgbColor,
                   maxWidth: "350px", // Ensure input doesn't stretch too wide
                   width: "100%",
                 }}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <div className="w-full flex justify-center">
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                className="w-full text-left text-sm bg-transparent border-b focus:outline-none px-2"
+                style={{ borderColor: rgbColor, color: rgbColor, fontSize: "clamp(12px, 1rem, 24pt)" }}
+                onChange={(e) => setConPassword(e.target.value)}
               />
             </div>
 
@@ -113,4 +133,4 @@ const ForgetUsername: React.FC = () => {
   );
 };
 
-export default ForgetUsername;
+export default ResetPassword;
