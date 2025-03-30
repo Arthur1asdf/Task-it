@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
 import "../index.css";
+import background from "../Images/login wallpaper.png";
 
 const Login: React.FC = () => {
   const navigate = useNavigate(); // Hook for navigation
@@ -39,7 +40,7 @@ const Login: React.FC = () => {
     <div
       className="h-screen w-full bg-fixed bg-center relative overflow-auto"
       style={{
-        backgroundImage: "url('https://media.discordapp.net/attachments/903014510376398889/1354260901318103232/Untitled118_20250325210700.png?ex=67e4a53f&is=67e353bf&hm=32b7b103356959c718d793b5758d1167e3a5ccf23bb87b0a7bf8b660374385d4&=&format=webp&quality=lossless&width=1182&height=665')",
+        backgroundImage: `url(${background})`,
         backgroundSize: "cover",
       }}
     >
@@ -57,7 +58,7 @@ const Login: React.FC = () => {
           }}
         >
           {/* Login Title */}
-          <h2 className="text-xl font-bold mb-3 text-center" style={{ color: rgbColor, maxFontSize: "24pt" }}>
+          <h2 className="text-xl font-bold mb-3 text-center" style={{ color: rgbColor }}>
             Login
           </h2>
 

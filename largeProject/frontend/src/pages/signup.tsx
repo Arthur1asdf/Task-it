@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Added navigation
 import "../index.css";
+import background from "../Images/login wallpaper.png";
 
 const SignUp = () => {
   const [rgbColor, setRgbColor] = useState("rgb(85, 70, 60)");
@@ -79,8 +80,8 @@ const SignUp = () => {
     <div
     className="h-screen w-full bg-fixed bg-center relative overflow-auto"
     style={{
-        backgroundImage: "url('https://media.discordapp.net/attachments/903014510376398889/1354260901318103232/Untitled118_20250325210700.png?ex=67e4a53f&is=67e353bf&hm=32b7b103356959c718d793b5758d1167e3a5ccf23bb87b0a7bf8b660374385d4&=&format=webp&quality=lossless&width=1182&height=665')",
-        backgroundSize: "cover",
+      backgroundImage: `url(${background})`,
+      backgroundSize: "cover",
       }}
     >
       <div

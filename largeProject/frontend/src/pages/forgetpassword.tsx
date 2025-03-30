@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
+import background from "../Images/sticky note.png";
 
 const ForgetPassword: React.FC = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const ForgetPassword: React.FC = () => {
           style={{
             color: rgbColor,
             zIndex: 2,
-            backgroundImage: "url('https://cdn.discordapp.com/attachments/903014510376398889/1354211028518305884/Untitled115_20250325175046.png?ex=67e476cd&is=67e3254d&hm=4f3a65384c9159a39555b9ea54c43356d08a081a98a218c916300fbf045f5cd0&')", // Set the image here
+            backgroundImage: `url(${background})`,
             backgroundSize: "cover", 
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
