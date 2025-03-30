@@ -1,0 +1,72 @@
+
+  
+  /* Default positioning */
+  .sticky-note {
+    position: absolute;
+    top: 15%;
+    left: 79%;
+    width: 15vw;
+    max-width: 200px;
+    min-width: 90px;
+    transform: translate(-50%, -50%);
+  }
+  
+  .sticky-note img {
+    width: 60%;
+    height: auto;
+    cursor: pointer;
+  }
+  
+  .calendar {
+    position: absolute;
+    top: 77%;
+    left: 60%;
+    width: 20vw;
+    max-width: 300px;
+    min-width: 120px;
+    transform: translate(-50%, -50%);
+  }
+  
+  .calendar img {
+    width: 120%;
+    height: auto;
+    cursor: pointer;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .sticky-note {
+      top: 10%;
+      left: 75%;
+    }
+  
+    .calendar {
+      top: 70%;
+      left: 55%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .sticky-note {
+      top: 12%;
+      left: 40%;
+    }
+  
+    .calendar {
+      top: 80%;
+      left: 50%;
+    }
+  }
+  
+  @media (max-width: 375px) {
+    .sticky-note {
+      top: 8%;
+      left: 80%;
+    }
+  
+    .calendar {
+      top: 85%;
+      left: 45%;
+    }
+  }
+  

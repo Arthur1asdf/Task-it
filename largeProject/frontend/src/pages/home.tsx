@@ -7,16 +7,10 @@ import lamp from "../Images/HomeDesktop/HomeDesktopLamp.png";
 import logout from "../Images/HomeDesktop/logout.png";
 
 const Home: React.FC = () => {
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate(); // Use navigate instead of window.location
 
-  const handleStickyNoteClick = () => {
-    navigate("/note"); // Navigate when clicking the sticky note
-  };
-
-  const handleCalendarClick = () => {
-    navigate("/calendar"); // Navigate when clicking the calendar
-  };
-
+  const goToLogin = () => navigate("/login");
+  const goToCalender = () => navigate("/calender");
   return (
     <div
       style={{
@@ -36,20 +30,20 @@ const Home: React.FC = () => {
       <div
         style={{
           position: "absolute",
-          top: "15%", // Position relative to the background
+          top: "15%", 
           left: "79%",
-          width: "15vw", // Scales with viewport width
-          maxWidth: "200px", // Prevents it from growing too large
-          minWidth: "90px", // Prevents it from shrinking too small
-          transform: "translate(-50%, -50%)", // Centers the sticky note
+          width: "15vw",
+          maxWidth: "200px",
+          minWidth: "90px", 
+          transform: "translate(-50%, -50%)", 
         }}
       >
         <img
           src={logout} // Logout button
           alt="Sticky Note"
-          onClick={handleStickyNoteClick}
+          onClick={goToLogin}
           style={{
-            width: "60%", // Adjusts dynamically with parent div
+            width: "60%",
             height: "auto",
             cursor: "pointer",
           }}
@@ -60,20 +54,20 @@ const Home: React.FC = () => {
       <div
         style={{
           position: "absolute",
-          top: "77%", // Adjust position to where you want the calendar
+          top: "77%",
           left: "60%",
-          width: "20vw", // Increased size for better visibility
-          maxWidth: "300px", // Allows a larger maximum size
-          minWidth: "120px", // Prevents it from shrinking too much
+          width: "20vw", 
+          maxWidth: "300px",
+          minWidth: "120px", 
           transform: "translate(-50%, -50%)",
         }}
       >
         <img
-          src={calender} // Calendar button
+          src={calender}
           alt="Calendar"
-          onClick={handleCalendarClick}
+          onClick={goToCalender}
           style={{
-            width: "120%", // Increased size for better visibility
+            width: "120%",
             height: "auto",
             cursor: "pointer",
           }}
