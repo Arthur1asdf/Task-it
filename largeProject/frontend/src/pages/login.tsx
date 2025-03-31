@@ -28,7 +28,7 @@ const Login: React.FC = () => {
         navigate("/home");
         console.log("Login Successful, redirecting to home page...");
       } else {
-        console.log("Wrong Username or Password");
+        alert("Wrong Username or Password");
       }
     } catch (error) {
       console.error("Error:", error);

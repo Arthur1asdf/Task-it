@@ -13,19 +13,23 @@ const ForgetPassword: React.FC = () => {
     setRgbColor("rgb(85, 70, 60)");
 
     try {
-      const response = await fetch("http://146.190.218.123:5000/api/forgot-password/forgot-password", {
+      const response = await fetch("http://146.190.218.123:5000/api/forgot-password", {  // Fixed URL
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({Email: email}),
+        body: JSON.stringify({ Email: email }),
       });
-
+  
       const data = await response.json();
-      console.log("Password reset link sent to:", email);
-      alert("If this email is registered, a reset link will be sent.");
-      navigate("/login");
-
+  
+      if (response.ok) {
+        console.log("Password reset link sent to:", email);
+        alert("If this email is registered, a reset link will be sent.");
+      } else {
+        alert(data.error || "Failed to send reset link");
+      }
+  
     } catch (error) {
       console.error("Error:", error);
       alert("Something went wrong");
