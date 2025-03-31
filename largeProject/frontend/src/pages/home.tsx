@@ -1,43 +1,55 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import background from "../Images/HomeDesktop/home background 2.png";
-import calender from "../Images/HomeDesktop/calender.png";
-import logout from "../Images/HomeDesktop/logout.png";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const goToLogin = () => navigate("/login");
   const goToCalender = () => navigate("/calender");
 
-  // State to manage tasks, popup, and editing
-  const [tasks, setTasks] = useState(["Task 1", "Task 2", "Task 3"]);
+  // Task list state
+  const [tasks, setTasks] = useState<string[]>([]);
   const [showPopup, setShowPopup] = useState(false);
   const [newTask, setNewTask] = useState("");
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [hoveredTask, setHoveredTask] = useState<number | null>(null);
 
-  // Handle saving new or edited tasks
+  const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
+  const fullDayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  // Toggle day selection
+  const handleDayToggle = (dayIndex: number) => {
+    const day = fullDayNames[dayIndex];
+    setSelectedDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+    );
+  };
+
+  // Save new or edited task
   const handleSave = () => {
     if (newTask.trim()) {
       if (editingIndex !== null) {
-        // Edit existing task
         const updatedTasks = [...tasks];
         updatedTasks[editingIndex] = newTask;
         setTasks(updatedTasks);
         setEditingIndex(null);
       } else {
-        // Add new task
         setTasks([...tasks, newTask]);
       }
       setNewTask("");
+      setSelectedDays([]);
       setShowPopup(false);
     }
   };
 
-  // Open popup for editing a task
-  const handleEdit = (index: number) => {
-    setNewTask(tasks[index]);
-    setEditingIndex(index);
-    setShowPopup(true);
+  // Delete a task
+  const handleDelete = () => {
+    if (editingIndex !== null) {
+      setTasks(tasks.filter((_, index) => index !== editingIndex));
+      setEditingIndex(null);
+      setShowPopup(false);
+    }
   };
 
   return (
@@ -60,7 +72,7 @@ const Home: React.FC = () => {
       <div
         style={{
           width: "16rem",
-          height: "440px",
+          height: "470px",
           backgroundColor: "#FDEEC0",
           border: "2px solid #6F5A30",
           padding: "1rem",
@@ -68,13 +80,13 @@ const Home: React.FC = () => {
           display: "flex",
           flexDirection: "column",
           position: "relative",
-          marginLeft: "125px",
-          marginTop: "-50px",
+          marginLeft: "415px",
+          marginTop: "-60px",
         }}
       >
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "bold" }}>Tasks</h2>
+          <h2 style={{ fontSize: "2.10rem", fontWeight: "bold" }}>Tasks</h2>
           <div style={{ display: "flex", gap: "1rem", color: "#6F5A30", cursor: "pointer" }}>
             <span>{"<"}</span>
             <span>{">"}</span>
@@ -90,32 +102,40 @@ const Home: React.FC = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                padding: "0.25rem",
+                padding: "0.5rem",
                 borderRadius: "4px",
                 transition: "background-color 0.2s",
                 position: "relative",
+                fontSize: "1.5rem",
+                backgroundColor: hoveredTask === index ? "#f5dca6" : "transparent",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f5dca6")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+              onMouseEnter={() => setHoveredTask(index)}
+              onMouseLeave={() => setHoveredTask(null)}
             >
               <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <input type="checkbox" style={{ width: "1rem", height: "1rem" }} />
                 <span>{task}</span>
               </label>
-              <span
-                style={{
-                  fontSize: "0.9rem",
-                  color: "#6F5A30",
-                  cursor: "pointer",
-                  opacity: "0",
-                  transition: "opacity 0.2s",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "0")}
-                onClick={() => handleEdit(index)}
-              >
-                Edit
-              </span>
+
+              {/* Edit button appears when task is hovered */}
+              {hoveredTask === index && (
+                <span
+                  style={{
+                    fontSize: "0.9rem",
+                    color: "#6F5A30",
+                    cursor: "pointer",
+                    transition: "opacity 0.2s",
+                    opacity: 1,
+                  }}
+                  onClick={() => {
+                    setNewTask(task);
+                    setEditingIndex(index);
+                    setShowPopup(true);
+                  }}
+                >
+                  Edit
+                </span>
+              )}
             </div>
           ))}
         </div>
@@ -125,14 +145,15 @@ const Home: React.FC = () => {
           style={{
             position: "absolute",
             bottom: "12px",
-            left: "50%",
+            left: "15%",
             transform: "translateX(-50%)",
             color: "#6F5A30",
-            fontSize: "1.5rem",
+            fontSize: "2.5rem",
             cursor: "pointer",
           }}
           onClick={() => {
             setNewTask("");
+            setSelectedDays([]);
             setEditingIndex(null);
             setShowPopup(true);
           }}
@@ -172,83 +193,36 @@ const Home: React.FC = () => {
               width: "100%",
             }}
           />
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
-            <button
-              onClick={() => setShowPopup(false)}
-              style={{
-                backgroundColor: "#B0A080",
-                padding: "8px 12px",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              style={{
-                backgroundColor: "#6F5A30",
-                color: "white",
-                padding: "8px 12px",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >
-              {editingIndex !== null ? "Update" : "Save"}
-            </button>
+
+          {/* Weekday Selection */}
+          <p style={{ fontSize: "1rem", fontWeight: "bold", marginBottom: "5px" }}>Occurs every:</p>
+          <div style={{ display: "flex", justifyContent: "center", gap: "5px", marginBottom: "10px" }}>
+            {daysOfWeek.map((day, index) => (
+              <button
+                key={index}
+                onClick={() => handleDayToggle(index)}
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "50%",
+                  border: "1px solid #6F5A30",
+                  backgroundColor: selectedDays.includes(fullDayNames[index]) ? "#FDEEC0" : "white",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                {day}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <button onClick={() => setShowPopup(false)}>Cancel</button>
+            {editingIndex !== null && <button onClick={handleDelete}>Delete</button>}
+            <button onClick={handleSave}>{editingIndex !== null ? "Update" : "Save"}</button>
           </div>
         </div>
       )}
-
-      {/* Sticky Note - Logout */}
-      <div
-        style={{
-          position: "absolute",
-          top: "15%",
-          left: "79%",
-          width: "15vw",
-          maxWidth: "200px",
-          minWidth: "90px",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <img
-          src={logout}
-          alt="Sticky Note"
-          onClick={goToLogin}
-          style={{
-            width: "60%",
-            height: "auto",
-            cursor: "pointer",
-          }}
-        />
-      </div>
-
-      {/* Calendar */}
-      <div
-        style={{
-          position: "absolute",
-          top: "77%",
-          left: "60%",
-          width: "20vw",
-          maxWidth: "300px",
-          minWidth: "120px",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <img
-          src={calender}
-          alt="Calendar"
-          onClick={goToCalender}
-          style={{
-            width: "120%",
-            height: "auto",
-            cursor: "pointer",
-          }}
-        />
-      </div>
     </div>
   );
 };
