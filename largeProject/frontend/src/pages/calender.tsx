@@ -129,10 +129,63 @@ export default function Calendar() {
     return view === "Week" ? renderWeekView() : renderDayView();
   };
 
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newMonth = parseInt(e.target.value);
+    const newDate = new Date(date);
+    newDate.setMonth(newMonth);
+    setDate(newDate);
+    setWeekStart(new Date(newDate.getFullYear(), newMonth, 1));
+  };
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newYear = parseInt(e.target.value);
+    const newDate = new Date(date);
+    newDate.setFullYear(newYear);
+    setDate(newDate);
+    setWeekStart(new Date(newYear, date.getMonth(), 1));
+  };
+
+  const renderMonthYearDropdowns = () => {
+    const months = [
+      "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+    ];
+
+    const years = Array.from({ length: 10 }, (_, i) => date.getFullYear() - 5 + i); // 10 years range centered on the current year
+
+    return (
+      <div className="flex gap-4 items-center">
+        <select value={date.getMonth()} onChange={handleMonthChange} className="border rounded px-3 py-2">
+          {months.map((month, index) => (
+            <option key={index} value={index}>{month}</option>
+          ))}
+        </select>
+        <select value={date.getFullYear()} onChange={handleYearChange} className="border rounded px-3 py-2">
+          {years.map((year) => (
+            <option key={year} value={year}>{year}</option>
+          ))}
+        </select>
+        <button
+          onClick={handleBack}
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+        >
+          Back
+        </button>
+      </div>
+    );
+  };
+
+  const handleBack = (): void => {
+    if (view === "Day") {
+      setView("Week");
+    }
+    // You can add more conditions if needed for other views.
+  };
+
   return (
     <div className="flex flex-col items-center gap-4 p-6">
       <div className="w-full max-w-6xl bg-white shadow-xl rounded-2xl p-4">
         <div className="flex justify-between items-center mb-4">
+          {renderMonthYearDropdowns()}
           <div className="flex gap-2">
             <button onClick={handlePrev}>{"<"}</button>
             <button onClick={handleNext}>{">"}</button>
