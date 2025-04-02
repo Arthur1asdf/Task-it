@@ -1,30 +1,13 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import background from "../Images/HomeDesktop/home background 2.png";
 
 const Home: React.FC = () => {
-  const navigate = useNavigate();
-  const goToLogin = () => navigate("/login");
-  const goToCalender = () => navigate("/calender");
-
   // Task list state
   const [tasks, setTasks] = useState<string[]>([]);
   const [showPopup, setShowPopup] = useState(false);
   const [newTask, setNewTask] = useState("");
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [hoveredTask, setHoveredTask] = useState<number | null>(null);
-
-  const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
-  const fullDayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-  // Toggle day selection
-  const handleDayToggle = (dayIndex: number) => {
-    const day = fullDayNames[dayIndex];
-    setSelectedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-    );
-  };
 
   // Save new or edited task
   const handleSave = () => {
@@ -38,7 +21,6 @@ const Home: React.FC = () => {
         setTasks([...tasks, newTask]);
       }
       setNewTask("");
-      setSelectedDays([]);
       setShowPopup(false);
     }
   };
@@ -87,10 +69,6 @@ const Home: React.FC = () => {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
           <h2 style={{ fontSize: "2.10rem", fontWeight: "bold" }}>Tasks</h2>
-          <div style={{ display: "flex", gap: "1rem", color: "#6F5A30", cursor: "pointer" }}>
-            <span>{"<"}</span>
-            <span>{">"}</span>
-          </div>
         </div>
 
         {/* Task List */}
@@ -105,7 +83,6 @@ const Home: React.FC = () => {
                 padding: "0.5rem",
                 borderRadius: "4px",
                 transition: "background-color 0.2s",
-                position: "relative",
                 fontSize: "1.5rem",
                 backgroundColor: hoveredTask === index ? "#f5dca6" : "transparent",
               }}
@@ -120,13 +97,7 @@ const Home: React.FC = () => {
               {/* Edit button appears when task is hovered */}
               {hoveredTask === index && (
                 <span
-                  style={{
-                    fontSize: "0.9rem",
-                    color: "#6F5A30",
-                    cursor: "pointer",
-                    transition: "opacity 0.2s",
-                    opacity: 1,
-                  }}
+                  style={{ fontSize: "0.9rem", color: "#6F5A30", cursor: "pointer" }}
                   onClick={() => {
                     setNewTask(task);
                     setEditingIndex(index);
@@ -153,7 +124,6 @@ const Home: React.FC = () => {
           }}
           onClick={() => {
             setNewTask("");
-            setSelectedDays([]);
             setEditingIndex(null);
             setShowPopup(true);
           }}
@@ -185,36 +155,8 @@ const Home: React.FC = () => {
             placeholder="Enter task..."
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
-            style={{
-              padding: "8px",
-              border: "1px solid #6F5A30",
-              borderRadius: "4px",
-              marginBottom: "10px",
-              width: "100%",
-            }}
+            style={{ padding: "8px", border: "1px solid #6F5A30", borderRadius: "4px", marginBottom: "10px", width: "100%" }}
           />
-
-          {/* Weekday Selection */}
-          <p style={{ fontSize: "1rem", fontWeight: "bold", marginBottom: "5px" }}>Occurs every:</p>
-          <div style={{ display: "flex", justifyContent: "center", gap: "5px", marginBottom: "10px" }}>
-            {daysOfWeek.map((day, index) => (
-              <button
-                key={index}
-                onClick={() => handleDayToggle(index)}
-                style={{
-                  width: "30px",
-                  height: "30px",
-                  borderRadius: "50%",
-                  border: "1px solid #6F5A30",
-                  backgroundColor: selectedDays.includes(fullDayNames[index]) ? "#FDEEC0" : "white",
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                }}
-              >
-                {day}
-              </button>
-            ))}
-          </div>
 
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <button onClick={() => setShowPopup(false)}>Cancel</button>
