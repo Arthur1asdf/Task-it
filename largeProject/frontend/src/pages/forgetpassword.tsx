@@ -13,7 +13,7 @@ const ForgetPassword: React.FC = () => {
     setRgbColor("rgb(85, 70, 60)");
 
     try {
-      const response = await fetch("http://146.190.218.123:5000/api/forgot-password", {  // Fixed URL
+      const response = await fetch("http://146.190.218.123:5000/api/forgot-password/forgot-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

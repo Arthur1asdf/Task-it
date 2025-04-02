@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Calendar() {
+  const navigate = useNavigate();
+  const goToHome = () => navigate("/home");
   const [view, setView] = useState<string>("Week");
   const [date, setDate] = useState<Date>(new Date());
   const [weekStart, setWeekStart] = useState<Date>(() => {
@@ -165,20 +168,13 @@ export default function Calendar() {
           ))}
         </select>
         <button
-          onClick={handleBack}
+          onClick={goToHome}
           className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
         >
           Back
         </button>
       </div>
     );
-  };
-
-  const handleBack = (): void => {
-    if (view === "Day") {
-      setView("Week");
-    }
-    // You can add more conditions if needed for other views.
   };
 
   return (
