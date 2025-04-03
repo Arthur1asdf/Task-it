@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { loginUser } from '../api/auth';
-import { View, TextInput, Button } from 'react-native';
+import { View, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ImageBackground, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
@@ -27,7 +27,7 @@ const LoginScreen = () => {
 
     return (
     <ImageBackground
-        source={require("../../assets/images/LoginBackgroundMobile.png")}
+        source={require("../../assets/images/LoginDoor.png")}
         style={styles.background}
         resizeMode='cover'
     >
@@ -40,7 +40,7 @@ const LoginScreen = () => {
             onChangeText={setUsername}
             value={username}
         />
-        <TouchableOpacity onPress={() => navigation.navigate("ForgotUsernameScreen")}>
+        <TouchableOpacity onPress={() => router.navigate("ForgotUsernameScreen")}>
             <Text style={styles.link}>Forgot Username?</Text>
         </TouchableOpacity>
 
@@ -51,7 +51,7 @@ const LoginScreen = () => {
             onChangeText={setPassword}
             value={password}
         />
-        <TouchableOpacity onPress={() => navigation.navigate("ForgotPasswordScreen")}>
+        <TouchableOpacity onPress={() => router.navigate("ForgotPasswordScreen")}>
             <Text style={styles.link}>Forgot Password?</Text>
         </TouchableOpacity>
 
@@ -76,41 +76,40 @@ const styles = StyleSheet.create({
       height: "120%",
       marginTop: "-18%",
       marginBottom: "28%",
+      transform: [{ scale: 1.1 }],
     },
     container: {
-      width: "70%",
+      width: "60%",
       maxWidth: 400,
       padding: 20,
       alignItems: "center",
-      marginTop: "45%"
+      marginTop: "40%"
     },
     title: {
-      fontSize: 20,
+      fontSize: 16,
       fontWeight: "bold",
       color: "rgb(85, 70, 60)",
-      marginBottom: 8,
     },
     input: {
       width: "100%",
       borderBottomWidth: 1,
       borderBottomColor: "rgb(85, 70, 60)",
-
       color: "rgb(85, 70, 60)",
       placeholderTextColor: "rgba(85, 70, 60, 0.42)",
       fontSize: 14,
-      paddingVertical: 10,
-      marginBottom: 10,
+      paddingVertical: 4,
+      marginBottom: 6,
     },
     link: {
       fontSize: 10,
-      color: "rgba(156, 146, 140, 0.84)",
+      color: "rgb(182, 160, 147)",
       textAlign: "right",
       marginBottom: 15,
     },
     buttonContainer: {
       flexDirection: "column",
       justifyContent: "space-between",
-      width: "50%",
+      width: "80%",
       height: 100,
       marginTop: 30,
     },

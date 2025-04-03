@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native'; // for navigation
 import { useRouter } from 'expo-router'; // for routing
 
 const HomeScreen = () => {
-  const navigation = useNavigation(); // If you need to navigate
   const router = useRouter(); // If you need to use expo-router
 
   // Logout function

@@ -24,7 +24,7 @@ const RegisterScreen = () => {
 
     return (
     <ImageBackground
-        source={require("../../assets/images/LoginBackgroundMobile.png")}
+        source={require("../../assets/images/LoginDoor.png")}
         style={styles.background}
         resizeMode='cover'
     >
@@ -74,30 +74,29 @@ const styles = StyleSheet.create({
       height: "120%",
       marginTop: "-18%",
       marginBottom: "28%",
+      transform: [{ scale: 1.12 }],
     },
     container: {
-      width: "70%",
+      width: "55%",
       maxWidth: 400,
       padding: 20,
       alignItems: "center",
-      marginTop: "42%"
+      marginTop: "37%"
     },
     title: {
-      fontSize: 20,
+      fontSize: 16,
       fontWeight: "bold",
       color: "rgb(85, 70, 60)",
-      marginBottom: 8,
     },
     input: {
       width: "100%",
       borderBottomWidth: 1,
       borderBottomColor: "rgb(85, 70, 60)",
-
       color: "rgb(85, 70, 60)",
       placeholderTextColor: "rgba(85, 70, 60, 0.42)",
       fontSize: 14,
-      paddingVertical: 10,
-      marginBottom: 10,
+      paddingVertical: 8,
+      marginBottom: 8,
     },
     link: {
       fontSize: 10,
@@ -108,7 +107,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
       flexDirection: "column",
       justifyContent: "space-between",
-      width: "50%",
+      width: "80%",
       height: 100,
       marginTop: 30,
     },
