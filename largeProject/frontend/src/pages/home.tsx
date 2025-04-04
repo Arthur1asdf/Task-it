@@ -6,9 +6,8 @@ import logout from "../Images/HomeDesktop/logout.png";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const goToLogin = () => navigate("/login");
+  // const goToLogin = () => navigate("/login");
   const goToCalender = () => navigate("/calender");
-  
 
   // Task list state
   const [tasks, setTasks] = useState<string[]>([]);
@@ -35,9 +34,7 @@ const Home: React.FC = () => {
   // Toggle day selection
   const handleDayToggle = (dayIndex: number) => {
     const day = fullDayNames[dayIndex];
-    setSelectedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-    );
+    setSelectedDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]));
   };
 
   // Save new or edited task
@@ -121,7 +118,7 @@ const Home: React.FC = () => {
         }}
       >
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2 style={{ fontSize: "2.10rem", fontWeight: "bold" }}>Tasks</h2>
           <div style={{ display: "flex", gap: "1rem", color: "#6F5A30", cursor: "pointer" }}>
             <span onClick={handlePreviousDay}>{"<"}</span>
@@ -130,9 +127,7 @@ const Home: React.FC = () => {
         </div>
 
         {/* Current Date */}
-        <div style={{ fontSize: "0.8rem", fontWeight: "bold", color: "#6F5A30", textAlign: "left", marginLeft: "0.2rem" }}>
-          {formatDate(currentDate)}
-        </div>
+        <div style={{ fontSize: "0.8rem", fontWeight: "bold", color: "#6F5A30", textAlign: "left", marginLeft: "0.2rem" }}>{formatDate(currentDate)}</div>
 
         {/* Task List */}
         <div style={{ flexGrow: 1, overflowY: "auto" }}>
@@ -264,15 +259,15 @@ const Home: React.FC = () => {
           </div>
         </div>
       )}
-            {/* Calendar Container - Similar styling to the logout button */}
-            <div
+      {/* Calendar Container - Similar styling to the logout button */}
+      <div
         style={{
           position: "absolute",
           top: "80%",
           left: "65%",
-          width: "20vw", 
+          width: "20vw",
           maxWidth: "300px",
-          minWidth: "120px", 
+          minWidth: "120px",
           transform: "translate(-50%, -50%)",
         }}
       >
