@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
 import "../index.css";
 import background from "../Images/login wallpaper.png";
-
+// testing
 const Login: React.FC = () => {
   const navigate = useNavigate(); // Hook for navigation
   const [username, setUsername] = useState("");
@@ -44,9 +44,7 @@ const Login: React.FC = () => {
         backgroundSize: "cover",
       }}
     >
-      <div
-        className="absolute left-[50%] top-[20%] translate-x-[-50%] flex flex-col items-center justify-center"
-      >
+      <div className="absolute left-[50%] top-[20%] translate-x-[-50%] flex flex-col items-center justify-center">
         <div
           className="w-[90vw] max-w-[500px] h-auto flex flex-col items-center justify-center p-4"
           style={{
@@ -74,12 +72,7 @@ const Login: React.FC = () => {
             />
             {/* Forgot Username Link */}
             <div className="w-full text-right">
-              <button
-                className="text-xs hover:underline"
-                style={{ color: rgbColor }}
-                onClick={() => navigate("/forgetusername")}
-                type="button"
-              >
+              <button className="text-xs hover:underline" style={{ color: rgbColor }} onClick={() => navigate("/forgetusername")} type="button">
                 Forgot Username?
               </button>
             </div>
@@ -94,12 +87,7 @@ const Login: React.FC = () => {
             />
             {/* Forgot Password Link */}
             <div className="w-full text-right">
-              <button
-                className="text-xs hover:underline"
-                style={{ color: rgbColor }}
-                onClick={() => navigate("/forgetpassword")}
-                type="button"
-              >
+              <button className="text-xs hover:underline" style={{ color: rgbColor }} onClick={() => navigate("/forgetpassword")} type="button">
                 Forgot Password?
               </button>
             </div>
@@ -107,21 +95,12 @@ const Login: React.FC = () => {
             {/* Button Container */}
             <div className="w-full flex justify-between mt-3">
               {/* Enter Button */}
-              <button
-                type="submit"
-                className="text-sm font-bold bg-transparent hover:underline w-full sm:w-[48%]"
-                style={{ color: rgbColor, fontSize: "clamp(12px, 1rem, 24pt)" }}
-              >
+              <button type="submit" className="text-sm font-bold bg-transparent hover:underline w-full sm:w-[48%]" style={{ color: rgbColor, fontSize: "clamp(12px, 1rem, 24pt)" }}>
                 Enter
               </button>
 
               {/* Sign Up Button */}
-              <button
-                className="text-sm font-bold bg-transparent hover:underline w-full sm:w-[48%]"
-                onClick={() => navigate("/signup")}
-                type="button"
-                style={{ fontSize: "clamp(12px, 1rem, 24pt)" }}
-              >
+              <button className="text-sm font-bold bg-transparent hover:underline w-full sm:w-[48%]" onClick={() => navigate("/signup")} type="button" style={{ fontSize: "clamp(12px, 1rem, 24pt)" }}>
                 Sign Up
               </button>
             </div>

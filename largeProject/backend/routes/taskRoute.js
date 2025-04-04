@@ -296,20 +296,23 @@ module.exports = (db) => {
   //search task route
   router.get("/search-tasks", async (req, res) => {
     try {
-      const { query, userId } = req.query;
+      //http://localhost:5000/api/taskRoute/search-tasks?userId=67bfe1d7601fd1ede10e5e71&query=buy&date=2025-03-25
+      const { query, userId, date } = req.query;
 
-      if (!query) {
-        return res.status(400).json({ message: "Search is required" });
+      if (!query || !userId) {
+        return res.status(400).json({ message: "Search is required or userId is incorrect" });
+      }
+      if (!date) {
+        return res.status(400).json({ message: "Date is required" });
       }
 
       // case sensitibve match
       const searchCriteria = {
         name: { $regex: query, $options: "i" },
       };
-
-      if (userId) {
-        searchCriteria.userId = userId;
-      }
+      //searching for stuff only in userId
+      searchCriteria.userId = userId;
+      searchCriteria.taskDates = { $in: [date] };
 
       const tasks = await Task.find(searchCriteria).toArray();
 
