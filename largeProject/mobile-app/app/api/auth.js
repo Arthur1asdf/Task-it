@@ -18,6 +18,8 @@ const loginUser = async (username, password) => {
 
         if (response.data && response.data.token) {
             await AsyncStorage.setItem('token', response.data.token); // Store token
+            await AsyncStorage.setItem("userId", response.data.userId);  // Store userId
+
             return response.data;
         } else {
             return { error: "Invalid response from server" };

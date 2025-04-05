@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import HomeScreen from './screens/HomeScreen';   // Example home screen
+import Login from './screens/Login';
+import Register from './screens/Register';
+import Home from './screens/Home'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
@@ -29,10 +29,10 @@ const App = () => {
 
   return (
     <NavigationContainer>
-        <Stack.Navigator initialRouteName="LoginScreen">
-            <Stack.Screen name="LoginScreen" component={LoginScreen} />
-            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-            <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Navigator initialRouteName="Login">
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="Home" component={Home} />
         </Stack.Navigator>
     </NavigationContainer>
   );

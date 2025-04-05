@@ -1,18 +1,19 @@
-// Home Screen
+// DO NOT USE
+// USE HOME.TSX INSTEAD
+
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native'; // for navigation
 import { useRouter } from 'expo-router'; // for routing
 
 const HomeScreen = () => {
-  const router = useRouter(); // If you need to use expo-router
+  const router = useRouter(); // used to navigate between screens
 
   // Logout function
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('token'); // Remove token from AsyncStorage
-      router.navigate("screens/LoginScreen"); // Navigate to Login screen after logout
+      router.replace("screens/Login"); // Navigate to Login screen after logout
     } catch (error) {
       console.error('Error logging out:', error);
     }

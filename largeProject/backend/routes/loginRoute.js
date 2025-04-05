@@ -36,7 +36,7 @@ module.exports = (db, JWT_SECRET) => {
             { expiresIn: "1h" }
         );
 
-        res.status(200).json({ message: "Login successful", token, Username: user.Username, Email: user.Email });
+        res.status(200).json({ message: "Login successful", token, userId: user._id, Username: user.Username, Email: user.Email });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

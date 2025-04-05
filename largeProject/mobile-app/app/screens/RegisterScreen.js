@@ -1,3 +1,6 @@
+// DO NOT USE
+// USE REGISTER.TSX INSTEAD
+
 import React, { useState } from 'react';
 import { registerUser } from '../api/auth';
 import { View, TextInput} from 'react-native';
@@ -42,7 +45,7 @@ const RegisterScreen = () => {
             style={styles.input}
             placeholder="Email"
             onChangeText={setEmail}
-            value={username}
+            value={email}
         />
 
         <TextInput

@@ -12,7 +12,6 @@ module.exports = (db) => {
       //  http://localhost:5000/api/taskRoute/get-week?date=2025-03-20
       // NO BODY REQUIRED
       // FRONT END
-      //  FUCK YOU CHATGPT IT
       const { date } = req.query; // e.g., "2025-03-20"
       if (!date) {
         return res.status(400).json({ message: "Reference date is required" });

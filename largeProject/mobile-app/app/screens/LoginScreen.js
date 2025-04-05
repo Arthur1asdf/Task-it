@@ -1,3 +1,6 @@
+// DO NOT USE
+// USE LOGIN.TSX INSTEAD
+
 import React, { useState } from 'react';
 import { loginUser } from '../api/auth';
 import { View, TextInput } from 'react-native';
