@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const path = require("path"); //set path for frontend and backend communication
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
@@ -30,6 +31,13 @@ MongoClient.connect(MONGO_URI, { useUnifiedTopology: true })
     app.use("/api/taskRoute", taskRoute);
     app.use("/api/forgot-password", forgotPasswordRoute);
     app.use("/api/reset-password", resetPasswordRoute);
+
+    //frontend static files//////////////////////////////////////////
+    app.use(express.static(path.join(__dirname, "frontend/dist")));
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(__dirname, "frontend/dist/index.html"));
+    });
+    /////////////////////////////////////////////////////////////////
   })
   .catch((error) => console.error("MongoDB connection error:", error));
 
