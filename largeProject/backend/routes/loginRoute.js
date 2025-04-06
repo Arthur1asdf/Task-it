@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 module.exports = (db, JWT_SECRET) => {
-    router.post("/", async (req, res) => {
+    router.post("/login", async (req, res) => {
     try {
         const { Username, Password } = req.body;
 
