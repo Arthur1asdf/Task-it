@@ -65,10 +65,10 @@ const Login: React.FC = () => {
                 </TouchableOpacity>
 
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                    <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                         <Text style={styles.buttonText}>Login</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => router.navigate("./Register")}>
+                    <TouchableOpacity style={styles.registerButton} onPress={() => router.navigate("./Register")}>
                         <Text style={styles.buttonText}>Register</Text>
                     </TouchableOpacity>
                 </View>
@@ -122,10 +122,18 @@ const styles = StyleSheet.create({
         height: 100,
         marginTop: 30,
     },
-    button: {
+    loginButton: {
         flex: 1,
         padding: 10,
         backgroundColor: "rgb(85, 70, 60)",
+        borderRadius: 10,
+        alignItems: "center",
+        marginVertical: 5,
+    },
+    registerButton: {
+        backgroundColor: "rgb(128, 106, 91)",
+        flex: 1,
+        padding: 10,
         borderRadius: 10,
         alignItems: "center",
         marginVertical: 5,

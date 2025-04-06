@@ -32,6 +32,7 @@ const Home: React.FC = () => {
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+    const [streaks, setStreaks] = useState<number[]>([]);
     const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -101,7 +102,22 @@ const Home: React.FC = () => {
           console.error("Error fetching tasks", error);
           setTasks([]);
         }
-    };      
+    };    
+    
+    const fetchStreaks = async () => {
+        try {
+            const userId = await AsyncStorage.getItem("userId");
+
+            if (!userId) return;
+
+            const response = await TaskAPI.getStreaks(userId);
+            if (response) {
+                setStreaks(response);
+            }
+        } catch (error) {
+            console.error("Error fetching streaks", error);
+        }
+    }
 
     const handleSave = async () => {
         if (newTask.trim()) {
@@ -148,6 +164,7 @@ const Home: React.FC = () => {
         } catch (error) {
             console.error("Error deleting task", error);
         }
+        setShowPopup(false);
     };
 
     const handleEdit = (task: Task) => {
@@ -197,7 +214,8 @@ const Home: React.FC = () => {
                                     </TouchableOpacity>
                                     <View style={styles.taskActions}>
                                         <TouchableOpacity onPress={() => handleEdit(task)} style={styles.taskActionsButtons}>
-                                            <Text style={{color: "blue"}}>Edit</Text>
+                                            {/* <Text style={{color: "blue"}}>Edit</Text> */}
+                                            <Image source={require("../../assets/images/pencilIcon.png")} style={{ width: 20, height: 20, marginRight: 8 }} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -269,7 +287,7 @@ const Home: React.FC = () => {
                     <Image source={require("../../assets/images/Logout.png")} style={styles.logoutIcon} />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => router.navigate("./Calendar")}>
+                <TouchableOpacity onPress={() => router.navigate("./Calendar/WeeklyCalendarView")}>
                     <Image source={require("../../assets/images/Calender.png")} style={styles.calendarIcon} />
                 </TouchableOpacity>
 
