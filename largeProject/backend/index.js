@@ -4,8 +4,9 @@ const cors = require("cors");
 const path = require("path"); //set path for frontend and backend communication
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
+const path = require("path");
 
-//  middleware
+// Middleware
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -19,7 +20,7 @@ MongoClient.connect(MONGO_URI, { useUnifiedTopology: true })
     db = client.db("habbit");
     console.log("Connected to MongoDB");
 
-    // Import and use routes
+    // Mount routes AFTER db is ready
     const registerRoute = require("./routes/registerRoute")(db);
     const loginRoute = require("./routes/loginRoute")(db, JWT_SECRET);
     const taskRoute = require("./routes/taskRoute")(db);
@@ -28,23 +29,22 @@ MongoClient.connect(MONGO_URI, { useUnifiedTopology: true })
 
     app.use("/api/register", registerRoute);
     app.use("/api/login", loginRoute);
+    console.log("Mounted loginRoute");
     app.use("/api/taskRoute", taskRoute);
     app.use("/api/forgot-password", forgotPasswordRoute);
     app.use("/api/reset-password", resetPasswordRoute);
 
-    //frontend static files//////////////////////////////////////////
-    app.use(express.static(path.join(__dirname, "frontend/dist")));
+    // Serve frontend
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
     app.get("*", (req, res) => {
-      res.sendFile(path.join(__dirname, "frontend/dist/index.html"));
+      if (req.originalUrl.startsWith("/api")) {
+        return res.status(404).json({ error: "API route not found" });
+      }
+      res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
     });
-    /////////////////////////////////////////////////////////////////
+
+    const PORT = 5000;
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
-  .catch((error) => console.error("MongoDB connection error:", error));
-
-app.get("/", (req, res) => {
-  res.send("This is the home");
-});
-
-// Start the server
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  .catch((error) => console.error(" MongoDB connection error:", error));
