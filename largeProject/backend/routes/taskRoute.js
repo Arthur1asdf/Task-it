@@ -5,47 +5,103 @@ const { ObjectId, ReturnDocument } = require("mongodb");
 module.exports = (db) => {
   const User = db.collection("User");
   const Task = db.collection("User-Tasks");
-  // Get Week Route: fetches tasks for the week based on a reference date
-  router.get("/get-week", async (req, res) => {
+
+  //get tasks route here
+  router.get("/get-week-tasks", async (req, res) => {
     try {
-      //this is a QUERY DO NOT USE BODY THIS IS HOW YOU TEST IN POSTMAN
-      //  http://localhost:5000/api/taskRoute/get-week?date=2025-03-20
-      // NO BODY REQUIRED
-      // FRONT END
-      const { date } = req.query; // e.g., "2025-03-20"
-      if (!date) {
-        return res.status(400).json({ message: "Reference date is required" });
+      // http://localhost:5000/api/taskRoute/get-week-tasks?userId=67bfe1d7601fd1ede10e5e71&taskDate=2025-03-25
+      const { userId, date } = req.query;
+      if (!userId || !date) {
+        return res.status(400).json({ message: "User ID is required and Task date" });
       }
 
+      const _id = new ObjectId(String(userId));
+      const user = await User.findOne({ _id });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Get the day of the week for the given date
       const currentDate = new Date(date);
-      const day = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
-
-      // Calculate start of week (Sunday) and normalize time to the start of day
+      const dayOfWeek = currentDate.getDay(); // 0 (Sun) - 6 (Sat)
+  
+      // Get Sunday of the current week
       const startOfWeek = new Date(currentDate);
-      startOfWeek.setDate(currentDate.getDate() - day);
+      startOfWeek.setDate(currentDate.getDate() - dayOfWeek);
       startOfWeek.setHours(0, 0, 0, 0);
-
-      // Calculate end of week (Saturday) and set time to the end of day
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6);
+  
+      // Get Saturday of the current week
+      const endOfWeek = new Date(currentDate);
+      endOfWeek.setDate(currentDate.getDate() + (6 - dayOfWeek));
       endOfWeek.setHours(23, 59, 59, 999);
-
-      // Query tasks that have a dueDate within this week
-      const tasks = await Task.find({
-        dueDate: { $gte: startOfWeek, $lte: endOfWeek },
-      }).toArray();
-
-      // Format dates to "YYYY-MM-DD" by slicing the ISO string
+  
+      // format as YYYY-MM-DD
       const formattedStart = startOfWeek.toISOString().slice(0, 10);
       const formattedEnd = endOfWeek.toISOString().slice(0, 10);
 
-      //startofweek is sunday and endofweek is saturday
-      res.json({ startOfWeek: formattedStart, endOfWeek: formattedEnd, tasks });
+      // Find tasks within the date range
+      // $elemMatch is used to match elements in an array that satisfy the specified criteria
+      // $gte and $lte are used to specify the range of dates
+      const tasks = await Task.find({
+        userId,
+        taskDates: {
+          $elemMatch: {
+            $gte: formattedStart,
+            $lte: formattedEnd,
+          },
+        },
+      }).toArray();
+
+      console.log(tasks);
+      res.json({ tasks });
     } catch (error) {
-      console.error("Error fetching tasks for week:", error);
+      console.error("Error fetching tasks:", error);
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
+
+  // i quit on this one ~ qui
+  // Get Week Route: fetches tasks for the week based on a reference date
+  router.get("/get-week", async (req, res) => {
+    try {
+      const { userId, date } = req.query;
+      if (!userId || !date) {
+        return res.status(400).json({ error: "Missing userId or date" });
+      }
+  
+      const currentDate = new Date(date);
+      const dayOfWeek = currentDate.getDay(); // 0 (Sun) - 6 (Sat)
+  
+      // Get Sunday of the current week
+      const startOfWeek = new Date(currentDate);
+      startOfWeek.setDate(currentDate.getDate() - dayOfWeek);
+      startOfWeek.setHours(0, 0, 0, 0);
+  
+      // Get Saturday of the current week
+      const endOfWeek = new Date(currentDate);
+      endOfWeek.setDate(currentDate.getDate() + (6 - dayOfWeek));
+      endOfWeek.setHours(23, 59, 59, 999);
+  
+      const formattedStart = startOfWeek.toISOString().slice(0, 10);
+      const formattedEnd = endOfWeek.toISOString().slice(0, 10);
+  
+      const tasks = await Task.find({
+        userId,
+        taskDates: {
+          $elemMatch: {
+            $gte: formattedStart,
+            $lte: formattedEnd,
+          },
+        },
+      }).toArray();
+  
+      res.json(tasks);
+    } catch (error) {
+      console.error("Error getting weekly tasks: ", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+  
 
   // Add Task Route
   router.post("/add-task", async (req, res) => {

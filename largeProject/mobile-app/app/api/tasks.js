@@ -5,13 +5,13 @@ const API_URL = `${API_BASE_URL}/taskRoute`;
 
 const TaskAPI = {
   // Fetch tasks for the week based on a reference date
-  getWeekTasks: async (date) => {
+  getWeekTasks: async (userId, taskDate) => {
     try {
-      const response = await axios.get(`${API_URL}/get-week`, { params: { date } });
-      return response.data;
+      const response = await axios.get(`${API_URL}/get-week-tasks`, { params: { userId, date: taskDate } });
+      return response.data.tasks || [];
     } catch (error) {
-      console.error('Error fetching weekly tasks:', error);
-      throw new Error('Failed to fetch weekly tasks');
+      console.error('Error fetching tasks:', error.response?.data || error);
+      throw new Error('Failed to fetch tasks');
     }
   },
   

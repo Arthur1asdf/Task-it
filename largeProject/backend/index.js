@@ -34,6 +34,7 @@ MongoClient.connect(MONGO_URI, { useUnifiedTopology: true })
     app.use("/api/forgot-password", forgotPasswordRoute);
     app.use("/api/reset-password", resetPasswordRoute);
 
+<<<<<<< Updated upstream
     // Serve frontend
     app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
@@ -41,6 +42,11 @@ MongoClient.connect(MONGO_URI, { useUnifiedTopology: true })
       if (req.originalUrl.startsWith("/api")) {
         return res.status(404).json({ error: "API route not found" });
       }
+=======
+    //frontend static files//////////////////////////////////////////
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
+    app.get("*", (req, res) => {
+>>>>>>> Stashed changes
       res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
     });
 
