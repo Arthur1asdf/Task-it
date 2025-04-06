@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Calendar() {
@@ -8,20 +8,53 @@ export default function Calendar() {
   const [date, setDate] = useState<Date>(new Date());
   const [weekStart, setWeekStart] = useState<Date>(() => {
     const today = new Date();
-    today.setDate(today.getDate() - today.getDay() + 1);
+    today.setDate(today.getDate() - today.getDay()); // Start on Sunday
     return today;
-  });
+  });  
   const [tasksByDate, setTasksByDate] = useState<Record<string, string[]>>({});
   const [newTask, setNewTask] = useState<string>("");
 
   const getDateKey = (dateObj: Date): string => dateObj.toISOString().split("T")[0];
 
+
+  useEffect(() => {
+    const fetchWeekTasks = async () => {
+      console.log("I'm trying");
+      console.log("Week start date:", weekStart.toISOString().split("T")[0]);
+
+      const response = await fetch(
+        `http://146.190.218.123:5000/api/taskRoute/get-week?date=${weekStart.toISOString().split("T")[0]}`
+      );
+      if (!response.ok) {
+        console.error("Failed to fetch weekly tasks");
+        return;
+      }
+  
+      const data = await response.json();
+      console.log("Fetched tasks data:", data);
+      const organizedTasks: Record<string, string[]> = {}; 
+  
+      data.tasks.forEach((task: { dueDate: string; title: string }) => {
+        const key = task.dueDate.split("T")[0]; // Get YYYY-MM-DD
+        console.log("Task key:", key);
+        if (!organizedTasks[key]) organizedTasks[key] = [];
+        organizedTasks[key].push(task.title); // Or whatever field holds task text
+      });
+      console.log("Organized tasks:", organizedTasks);
+      setTasksByDate(organizedTasks);
+      console.log("Tasks by date state:", tasksByDate); // <-- Log after setTasksByDate
+
+    };
+  
+    fetchWeekTasks();
+  }, [weekStart]);
+
   const handleViewChange = (newView: string): void => {
     if (newView === "Week") {
       const newStart = new Date(date);
-      newStart.setDate(date.getDate() - date.getDay() + 1);
+      newStart.setDate(date.getDate() - date.getDay()); // Start on Sunday
       setWeekStart(newStart);
-    }
+    }    
     setView(newView);
   };
 
@@ -169,7 +202,7 @@ export default function Calendar() {
         </select>
         <button
           onClick={goToHome}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+          className="bg-gray-500 text-white px-4 py-2 cursor-pointer rounded hover:bg-gray-600"
         >
           Back
         </button>
@@ -183,8 +216,12 @@ export default function Calendar() {
         <div className="flex justify-between items-center mb-4">
           {renderMonthYearDropdowns()}
           <div className="flex gap-2">
-            <button onClick={handlePrev}>{"<"}</button>
-            <button onClick={handleNext}>{">"}</button>
+            <button 
+            className="cursor-pointer"
+            onClick={handlePrev}>{"<"}</button>
+            <button 
+            className="cursor-pointer"
+            onClick={handleNext}>{">"}</button>
           </div>
         </div>
         <div className="flex justify-center gap-4 mb-4">
@@ -192,7 +229,7 @@ export default function Calendar() {
             <button
               key={v}
               onClick={() => handleViewChange(v)}
-              className={`px-4 py-2 rounded-lg border font-medium ${view === v ? 'bg-black text-white' : 'text-black bg-white'}`}
+              className={`px-4 py-2 rounded-lg cursor-pointer border font-medium ${view === v ? 'bg-black text-white' : 'text-black bg-white'}`}
             >
               {v}
             </button>

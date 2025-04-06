@@ -12,7 +12,7 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setRgbColor("rgb(85, 70, 60)"); // Regular variable for color
-    try {
+    try {//http://task-it.works:5173/api/add-task/add-task
       const response = await fetch("http://146.190.218.123:5000/api/login/login", {
         method: "POST",
         headers: {
@@ -72,7 +72,7 @@ const Login: React.FC = () => {
             />
             {/* Forgot Username Link */}
             <div className="w-full text-right">
-              <button className="text-xs hover:underline" style={{ color: rgbColor }} onClick={() => navigate("/forgetusername")} type="button">
+              <button className="text-xs hover:underline" style={{ color: rgbColor }} onClick={() => navigate("/resetpassword")} type="button">
                 Forgot Username?
               </button>
             </div>

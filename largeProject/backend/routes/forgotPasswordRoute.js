@@ -23,9 +23,15 @@ module.exports = (db) => {
       const resetToken = crypto.randomBytes(32).toString("hex");
       await usersCollection.updateOne({ Email }, { $set: { resetToken, resetTokenExpiry: Date.now() + 3600000 } });
 
+<<<<<<< Updated upstream
       // send reset password email
       const resetLink = `http://task-it.works/reset-password/${resetToken}`;
       await sendEmail(Email, "Password Reset", `Click here: ${resetLink}`);
+=======
+            // send reset password email
+            const resetLink = `http://localhost:5173/resetpassword/${resetToken}`;
+            await sendEmail(Email, "Password Reset", `Click here: ${resetLink}`);
+>>>>>>> Stashed changes
 
       res.json({ message: "Check your email for the reset link." });
     } catch (error) {
