@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, ImageBackground, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { registerUser } from '../api/auth';
@@ -6,13 +6,51 @@ import { registerUser } from '../api/auth';
 const Register: React.FC = () => {
     const router = useRouter();
 
-    // Define state variables with explicit types
     const [username, setUsername] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [passwordError, setPasswordError] = useState<string>('');
+    const [requirements, setRequirements] = useState<{
+        length: boolean;
+        uppercase: boolean;
+        lowercase: boolean;
+        number: boolean;
+    }>({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+    });
+
+    // Validate password complexity
+    const validatePassword = (password: string) => {
+        const length = password.length >= 8;
+        const uppercase = /[A-Z]/.test(password);
+        const lowercase = /[a-z]/.test(password);
+        const number = /\d/.test(password);
+
+        setRequirements({
+            length,
+            uppercase,
+            lowercase,
+            number,
+        });
+
+        return length && uppercase && lowercase && number;
+    };
+
+    useEffect(() => {
+        // Auto-validation when password changes
+        validatePassword(password);
+    }, [password]);
 
     // Handle Registration
     const handleRegister = async (): Promise<void> => {
+        if (!validatePassword(password)) {
+            Alert.alert("Please fulfill all password requirements.");
+            return;
+        }
+
         try {
             const result = await registerUser(username, email, password);
 
@@ -61,6 +99,27 @@ const Register: React.FC = () => {
                     value={password}
                 />
 
+                {/* Password requirements */}
+                {password.length > 0 && (
+                    <View style={styles.requirementsContainer}>
+                        <Text style={styles.requirementsTitle}>Password Requirements:</Text>
+                        <View style={styles.requirementsList}>
+                            <Text style={[styles.requirementText, requirements.length ? styles.valid : styles.invalid]}>
+                                {requirements.length ? '✔' : '✘'} At least 8 characters
+                            </Text>
+                            <Text style={[styles.requirementText, requirements.uppercase ? styles.valid : styles.invalid]}>
+                                {requirements.uppercase ? '✔' : '✘'} At least one uppercase letter
+                            </Text>
+                            <Text style={[styles.requirementText, requirements.lowercase ? styles.valid : styles.invalid]}>
+                                {requirements.lowercase ? '✔' : '✘'} At least one lowercase letter
+                            </Text>
+                            <Text style={[styles.requirementText, requirements.number ? styles.valid : styles.invalid]}>
+                                {requirements.number ? '✔' : '✘'} At least one number
+                            </Text>
+                        </View>
+                    </View>
+                )}
+
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
                         <Text style={styles.buttonText}>Register</Text>
@@ -90,7 +149,7 @@ const styles = StyleSheet.create({
         maxWidth: 400,
         padding: 20,
         alignItems: "center",
-        marginTop: "37%"
+        marginTop: "37%",
     },
     title: {
         fontSize: 16,
@@ -105,12 +164,36 @@ const styles = StyleSheet.create({
         fontSize: 14,
         paddingVertical: 8,
         marginBottom: 8,
-    } as const,  // Explicitly mark it as a read-only object to avoid TS warnings
-    link: {
-        fontSize: 10,
-        color: "rgba(156, 146, 140, 0.84)",
-        textAlign: "right",
-        marginBottom: 15,
+    },
+    requirementsContainer: {
+        position: "absolute",
+        top: 300,
+        marginTop: 15,
+        backgroundColor: "#FFFBF0",
+        padding: 15,
+        borderRadius: 10,
+        width: "120%",
+        borderWidth: 1,
+        borderColor: "#F0C674",
+    },
+    requirementsTitle: {
+        fontWeight: "bold",
+        fontSize: 14,
+        color: "rgb(85, 70, 60)",
+    },
+    requirementsList: {
+        marginTop: 10,
+    },
+    requirementText: {
+        fontSize: 12,
+        marginBottom: 5,
+        color: "rgb(85, 70, 60)",
+    },
+    valid: {
+        color: "green",
+    },
+    invalid: {
+        color: "red",
     },
     buttonContainer: {
         flexDirection: "column",

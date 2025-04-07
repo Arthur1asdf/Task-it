@@ -11,7 +11,7 @@ const handleError = (error) => {
 //  Login user
 const loginUser = async (username, password) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/login/login`, { 
+        const response = await axios.post(`${API_BASE_URL}/login`, { 
             Username: username, 
             Password: password 
         }); 

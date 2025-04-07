@@ -13,6 +13,10 @@ interface Task {
   days?: string[];
   isCompleted?: boolean;
 }
+interface Streak {
+  streak: number;
+  lastActivity: Date;
+}
 
 const Home: React.FC = () => {
     // Logout function
@@ -32,7 +36,7 @@ const Home: React.FC = () => {
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-    const [streaks, setStreaks] = useState<number[]>([]);
+    const [streaks, setStreaks] = useState<Streak>();
     const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -72,6 +76,7 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         fetchTasks();
+        fetchStreaks();
     }, [selectedDate]);
 
     const fetchTasks = async () => {
@@ -208,7 +213,7 @@ const Home: React.FC = () => {
                             {tasks.map((task) => (
                                 <View key={task._id} style={styles.taskItem}>
                                     <TouchableOpacity onPress={() => handleToggleComplete(task)} style={{ flex: 1 }}>
-                                        <Text style={{ textDecorationLine: task.isCompleted ? "line-through" : "none" }}>
+                                        <Text style={ task.isCompleted ? styles.completedTask : styles.uncompletedTask }>
                                             {task.title}
                                         </Text>
                                     </TouchableOpacity>
@@ -237,31 +242,35 @@ const Home: React.FC = () => {
                         style={styles.input}
                     />
                     
-                    {/* Weekday Selection */}
-                    <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5 }}>Occurs every:</Text>
-                    <View style={{ display: "flex", justifyContent: "center", gap: 5, marginBottom: 10, flexDirection: "row" }}>
-                        {daysOfWeek.map((day, index) => (
-                            <TouchableOpacity
-                                key={index}
-                                onPress={() => handleDayToggle(index)}
-                                style={{
-                                    width: 30,
-                                    height: 30,
-                                    borderRadius: 50,
-                                    borderColor: "#6F5A30",
-                                    backgroundColor: selectedDays.includes(weekdays[index]) ? "#FDEEC0" : "white",
-                                    borderWidth: 1,
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                <Text style={{ fontWeight: "bold", color: selectedDays.includes(weekdays[index]) ? "#6F5A30" : "#000" }}>
-                                    {day}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
+                    {!editingTask && (
+                        <>
+                            {/* Weekday Selection */}
+                            <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5 }}>Occurs every:</Text>
+                            <View style={{ display: "flex", justifyContent: "center", gap: 5, marginBottom: 10, flexDirection: "row" }}>
+                                {daysOfWeek.map((day, index) => (
+                                    <TouchableOpacity
+                                        key={index}
+                                        onPress={() => handleDayToggle(index)}
+                                        style={{
+                                            width: 30,
+                                            height: 30,
+                                            borderRadius: 50,
+                                            borderColor: "#6F5A30",
+                                            backgroundColor: selectedDays.includes(weekdays[index]) ? "#FDEEC0" : "white",
+                                            borderWidth: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        <Text style={{ fontWeight: "bold", color: selectedDays.includes(weekdays[index]) ? "#6F5A30" : "#000" }}>
+                                            {day}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        </>
+                    )}
                     <View style={styles.buttonContainer}>
                         {/* Save Button */}
                         <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
@@ -282,14 +291,27 @@ const Home: React.FC = () => {
                     </View>
                 </View>
             )}
-    
-                <TouchableOpacity onPress={handleLogout}>
-                    <Image source={require("../../assets/images/Logout.png")} style={styles.logoutIcon} />
-                </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => router.navigate("./Calendar/WeeklyCalendarView")}>
-                    <Image source={require("../../assets/images/Calender.png")} style={styles.calendarIcon} />
-                </TouchableOpacity>
+            {/* Profile */}
+            {/* <TouchableOpacity onPress={() => router.navigate("./Profile")}>
+                <Image source={require("../../assets/images/Profile-black.png")} style={styles.profileIcon} />
+            </TouchableOpacity> */}
+
+            {/* Streaks */}
+                <View style={styles.streaksView}>
+                    <Image source={require("../../assets/images/smallStickyNote.png")} style={styles.stickyNote} />
+                    <Text style={{ fontSize: 20, color: "rgb(124, 104, 93)", left: 54, top: 35 }}>Streak</Text>
+                    <Text style={{ fontSize: 36, fontWeight: "bold", left: 52, top: 36, color: "rgb(74, 60, 53)", shadowColor: "#000", shadowOffset: {width: 4, height: 4}, shadowOpacity: 0.3 }}>{streaks ? streaks.streak : "0"}</Text>
+                </View>
+            {/* Logout */}
+            <TouchableOpacity onPress={handleLogout}>
+                <Image source={require("../../assets/images/Logout.png")} style={styles.logoutIcon} />
+            </TouchableOpacity>
+
+            {/* Calendar */}
+            <TouchableOpacity onPress={() => router.navigate("./Calendar/WeeklyCalendarView")}>
+                <Image source={require("../../assets/images/Calender.png")} style={styles.calendarIcon} />
+            </TouchableOpacity>
 
         </ImageBackground>
     );
@@ -314,7 +336,9 @@ const styles = StyleSheet.create({
     },
     taskList: {
         width: "82%", 
-        maxWidth: 300, 
+        maxWidth: 300,
+        // uncomment the next line to set a fixed height
+        // height: "70%",
         backgroundColor: "#FDEEC0",
         borderColor: "#6a5428",
         borderWidth: 0.5, 
@@ -362,6 +386,14 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         paddingVertical: 8,
+    },
+    completedTask: {
+        textDecorationLine: "line-through",
+        color: "gray",
+    },
+    uncompletedTask: {
+        textDecorationLine: "none",
+        color: "black",
     },
     taskActions: {
         flexDirection: "row",
@@ -439,6 +471,44 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#FFF",
     },
+    profileIcon: {
+        position: "absolute",
+        width: 100,
+        height: 100,
+        top: -670,
+        left: 65,
+        shadowColor: "#000",
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+    },
+    stickyNote: {
+        position: "absolute",
+        width: "200%",
+        height: "200%",
+        top: 0,
+        left: 0,
+        alignItems: "center",
+        justifyContent: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.4,
+    },
+    streaksView: {
+        position: "absolute",
+        width: 90,
+        height: 80,
+        top: 680,
+        left: -22,
+        backgroundImage: "../../assets/images/smallSticky.png",
+        // backgroundColor: "#FDEEC0",
+        // borderColor: "#6a5428",
+        // borderWidth: 0.5,
+        padding: 2,
+        borderRadius: 12,
+        alignItems: "center",
+        justifyContent: "center",
+    },
     calendarIcon: {
         position: "absolute",
         width: 650,
@@ -451,7 +521,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         width: 250, 
         height: 200, 
-        top: -600,
+        top: -800,
         left: 20, 
         transform: [{ scale: 0.4 }]
     },

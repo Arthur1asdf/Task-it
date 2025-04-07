@@ -4,7 +4,6 @@ const cors = require("cors");
 const path = require("path"); //set path for frontend and backend communication
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
-const path = require("path");
 
 // Middleware
 const app = express();
