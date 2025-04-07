@@ -1,53 +1,89 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+
+interface DecodedToken {
+  id: string;
+}
 
 export default function Calendar() {
   const navigate = useNavigate();
   const goToHome = () => navigate("/home");
+  const [userId, setUserId] = useState<string | null>(null);
   const [view, setView] = useState<string>("Week");
   const [date, setDate] = useState<Date>(new Date());
   const [weekStart, setWeekStart] = useState<Date>(() => {
     const today = new Date();
-    today.setDate(today.getDate() - today.getDay()); // Start on Sunday
+    today.setDate(today.getDate() - today.getDay());
     return today;
   });  
-  const [tasksByDate, setTasksByDate] = useState<Record<string, string[]>>({});
+  const [tasksByDate, setTasksByDate] = useState<Record<string, { name: string; isCompleted: boolean }[]>>({});
   const [newTask, setNewTask] = useState<string>("");
 
   const getDateKey = (dateObj: Date): string => dateObj.toISOString().split("T")[0];
 
-
   useEffect(() => {
-    const fetchWeekTasks = async () => {
-      console.log("I'm trying");
-      console.log("Week start date:", weekStart.toISOString().split("T")[0]);
+    const token = localStorage.getItem("token");
+    if (!token) return;
+  
+    try {
+      const decoded: DecodedToken = jwtDecode(token);
+      setUserId(decoded.id);
+      console.log("Decoded userId:", decoded.id);
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+  }, []);
+  
 
-      const response = await fetch(
-        `http://146.190.218.123:5000/api/taskRoute/get-week?date=${weekStart.toISOString().split("T")[0]}`
-      );
-      if (!response.ok) {
-        console.error("Failed to fetch weekly tasks");
-        return;
+  const fetchTasks = async () => {
+    if (!userId || !weekStart) {
+      console.error("Cannot fetch tasks: userId or weekStart is missing");
+      return;
+    }
+  
+    const updatedTasksByDate: Record<string, { name: string; isCompleted: boolean }[]> = {};
+
+  
+    const fetchForDay = async (dayOffset: number) => {
+      const currentDate = new Date(weekStart);
+      currentDate.setDate(weekStart.getDate() + dayOffset);
+      const key = getDateKey(currentDate);
+  
+      try {
+        const response = await fetch(`http://146.190.218.123:5000/api/taskRoute/get-tasks?userId=${userId}&taskDate=${key}`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Data for", key, ":", data); // Add this line
+          updatedTasksByDate[key] = data.tasks.map((task: any) => ({
+            name: task.name,
+            isCompleted: task.isCompleted
+          }));        
+
+        }        
+        else {
+          console.error(`Failed to fetch tasks for ${key}`);
+        }
+      } catch (error) {
+        console.error(`Error fetching tasks for ${key}:`, error);
       }
-  
-      const data = await response.json();
-      console.log("Fetched tasks data:", data);
-      const organizedTasks: Record<string, string[]> = {}; 
-  
-      data.tasks.forEach((task: { dueDate: string; title: string }) => {
-        const key = task.dueDate.split("T")[0]; // Get YYYY-MM-DD
-        console.log("Task key:", key);
-        if (!organizedTasks[key]) organizedTasks[key] = [];
-        organizedTasks[key].push(task.title); // Or whatever field holds task text
-      });
-      console.log("Organized tasks:", organizedTasks);
-      setTasksByDate(organizedTasks);
-      console.log("Tasks by date state:", tasksByDate); // <-- Log after setTasksByDate
-
     };
   
-    fetchWeekTasks();
-  }, [weekStart]);
+    // Fetch tasks for each day of the week (Sunday to Saturday)
+    await Promise.all(Array.from({ length: 7 }, (_, i) => fetchForDay(i)));
+  
+    setTasksByDate(updatedTasksByDate);
+  };
+  
+
+  useEffect(() => {
+    if (userId && weekStart) {
+      fetchTasks();
+    }
+  }, [userId, weekStart]);
+  
+  
+  
 
   const handleViewChange = (newView: string): void => {
     if (newView === "Week") {
@@ -80,15 +116,42 @@ export default function Calendar() {
     setDate(newDate);
   };
 
-  const addTask = (): void => {
-    if (newTask.trim() === "") return;
-    const key: string = getDateKey(date);
-    setTasksByDate((prev) => ({
-      ...prev,
-      [key]: [...(prev[key] || []), newTask.trim()]
-    }));
-    setNewTask("");
+  const addTask = async () => {
+    if (!newTask.trim() || !userId) return;
+  
+    const key: string = getDateKey(date); // selected date
+    const taskToAdd = newTask.trim();
+  
+    try {
+      const response = await fetch("http://146.190.218.123:5000/api/taskRoute/add-task", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userId,
+          taskName: taskToAdd,
+          taskDates: [key], // sending the selected date as an array
+        }),
+      });
+  
+      if (!response.ok) {
+        console.error("Failed to save task");
+        return;
+      }
+  
+      // Update local state
+      setTasksByDate((prev) => ({
+        ...prev,
+        [key]: [...(prev[key] || []), { name: taskToAdd, isCompleted: false }],
+      }));
+  
+      setNewTask("");
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
+  
 
   const renderWeekView = (): React.ReactNode => {
     const days = Array.from({ length: 7 }, (_, i) => {
@@ -115,9 +178,15 @@ export default function Calendar() {
               </h3>
               <ul className="text-sm text-gray-700 space-y-1 overflow-auto">
                 {(tasksByDate[key] || []).map((task, i) => (
-                  <li key={i} className="truncate">• {task}</li>
+                  <li
+                    key={i}
+                    className={`truncate ${task.isCompleted ? 'line-through text-gray-400' : ''}`}
+                  >
+                    • {task.name}
+                  </li>
                 ))}
               </ul>
+
             </div>
           );
         })}
@@ -151,8 +220,11 @@ export default function Calendar() {
         ) : (
           <ul className="space-y-2">
             {dayTasks.map((task, index) => (
-              <li key={index} className="p-3 border rounded shadow-sm">
-                {task}
+              <li
+                key={index}
+                className={`p-3 border rounded shadow-sm ${task.isCompleted ? 'line-through text-gray-400' : ''}`}
+              >
+                {task.name}
               </li>
             ))}
           </ul>

@@ -13,7 +13,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     setRgbColor("rgb(85, 70, 60)"); // Regular variable for color
     try {//http://task-it.works:5173/api/add-task/add-task
-      const response = await fetch("http://146.190.218.123:5000/api/login/login", {
+      const response = await fetch("http://146.190.218.123:5000/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
