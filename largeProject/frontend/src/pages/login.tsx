@@ -70,13 +70,7 @@ const Login: React.FC = () => {
               style={{ borderColor: rgbColor, color: rgbColor, fontSize: "clamp(12px, 1rem, 24pt)" }}
               onChange={(e) => setUsername(e.target.value)}
             />
-            {/* Forgot Username Link */}
-            <div className="w-full text-right">
-              <button className="text-xs hover:underline" style={{ color: rgbColor }} onClick={() => navigate("/resetpassword")} type="button">
-                Forgot Username?
-              </button>
-            </div>
-
+            
             {/* Password Input */}
             <input
               type="password"
