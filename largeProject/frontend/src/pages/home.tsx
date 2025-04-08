@@ -9,7 +9,7 @@ import logout from "../Images/HomeDesktop/logout.png";
 
 interface Task {
   _id: string;
-  name: string; // not taskName
+  name: string;
   taskDates: string[];
   userId: string;
   isCompleted: boolean;
@@ -55,12 +55,14 @@ const Home: React.FC = () => {
       setUserId(decoded.id);
       console.log("Decoded userId:", decoded.id);
   
-      // Immediately fetch tasks after decoding
-      fetchTasks(); 
+      // Fetch tasks and streak right after setting userId
+      fetchTasks();
+      fetchStreak(decoded.id);
     } catch (error) {
       console.error("Error decoding token:", error);
     }
   }, []);
+  
   
   
 
@@ -88,7 +90,7 @@ const Home: React.FC = () => {
     }      
     
     try {
-      const response = await fetch(`http://146.190.218.123:5000/api/taskRoute/get-tasks?userId=${userId}&taskDate=${currentDate.toISOString().split("T")[0]}`);
+      const response = await fetch(`http://task-it.works/api/taskRoute/get-tasks?userId=${userId}&taskDate=${currentDate.toISOString().split("T")[0]}`);
       if (response.ok) {
         const data = await response.json();
         setTasks(data.tasks);
@@ -104,6 +106,26 @@ const Home: React.FC = () => {
     fetchTasks();
   }, [userId, currentDate]); // Re-fetch tasks when date changes
 
+  //Get streaks
+  const fetchStreak = async (userId: string | null) => {
+    try {
+      const response = await fetch(`http://task-it.works/api/taskRoute/streaks?userId=${userId}`);
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error("Fetch failed, response was:", text);
+        return;
+      }
+  
+      const data = await response.json();
+      console.log("Streak data:", data);
+      setStreak(data.streak);
+    } catch (error) {
+      console.error("Error fetching streak:", error);
+    }
+  };
+  
+  
 
 // Save or update task
 const handleSave = async () => {
@@ -118,7 +140,7 @@ const handleSave = async () => {
     if (selectedDays.length > 0) {
       const current = new Date(currentDate); // use the currently viewed date
       const startOfWeek = new Date(current);
-      startOfWeek.setDate(current.getDate() - current.getDay()); // go to Sunday
+      startOfWeek.setDate(current.getDate() - current.getDay());
 
       for (let i = 0; i < 7; i++) {
         const date = new Date(startOfWeek);
@@ -134,14 +156,11 @@ const handleSave = async () => {
       datesToSave = [currentDate.toISOString().split("T")[0]];
     }
 
-    // If editing an existing task
     if (editingIndex !== null) {
-      // Call editTask to update the task
-      const taskId = tasks[editingIndex]._id; // Get taskId from the task being edited
-      await editTask(taskId, newTask); // Edit the task on the backend
+      const taskId = tasks[editingIndex]._id;
+      await editTask(taskId, newTask); 
     } else {
-      // Otherwise, it's a new task
-      const response = await fetch("http://146.190.218.123:5000/api/taskRoute/add-task", {
+      const response = await fetch("http://task-it.works/api/taskRoute/add-task", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -155,7 +174,7 @@ const handleSave = async () => {
 
       if (response.ok) {
         const createdTask = await response.json();
-        setTasks((prevTasks) => [...prevTasks, createdTask]); // Add the new task optimistically
+        setTasks((prevTasks) => [...prevTasks, createdTask]);
       } else {
         console.error("Failed to save task");
       }
@@ -182,7 +201,7 @@ const handleSave = async () => {
     }
   
     try {
-      const response = await fetch("http://146.190.218.123:5000/api/taskRoute/edit-task", {
+      const response = await fetch("http://task-it.works/api/taskRoute/edit-task", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -198,7 +217,6 @@ const handleSave = async () => {
         const updatedTask = await response.json();
         console.log("Task updated successfully:", updatedTask.task);
   
-        // Optionally, you can update the state to reflect the changes
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
             task._id === taskId ? { ...task, name: newTaskName } : task
@@ -220,7 +238,7 @@ const handleSave = async () => {
     }
   
     try {
-      const response = await fetch("http://146.190.218.123:5000/api/taskRoute/delete-task", {
+      const response = await fetch("http://task-it.works/api/taskRoute/delete-task", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -263,7 +281,7 @@ const handleSave = async () => {
     );
   
     try {
-      const response = await fetch("http://146.190.218.123:5000/api/taskRoute/complete-task", {
+      const response = await fetch("http://task-it.works/api/taskRoute/complete-task", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -279,16 +297,13 @@ const handleSave = async () => {
   
       if (response.ok) {
         console.log(data.message);
+        console.log("Response from /complete-task:", data);
 
         if (data.streak !== undefined) {
           setStreak(data.streak);
         }
 
-        if (!currentStatus) {
-          setStreak((prev) => prev + 1);
-        } else {
-          setStreak((prev) => Math.max(prev - 1, 0));
-        }
+        fetchStreak(userId);
   
       } else {
         console.error("Failed to update task:", data.message);
@@ -309,7 +324,7 @@ const handleSave = async () => {
     }
   
     try {
-      const response = await fetch(`http://146.190.218.123:5000/api/taskRoute/search-tasks?userId=${userId}&query=${searchQuery}&date=${currentDate.toISOString().split("T")[0]}`);
+      const response = await fetch(`http://task-it.works/api/taskRoute/search-tasks?userId=${userId}&query=${searchQuery}&date=${currentDate.toISOString().split("T")[0]}`);
   
       if (response.ok) {
         const data = await response.json();
@@ -321,8 +336,6 @@ const handleSave = async () => {
       console.error("Error searching tasks:", error);
     }
   };
-  
-  
   
 
   // Switch to next day
@@ -461,9 +474,9 @@ const handleSave = async () => {
                   opacity: 1,
                 }}
                 onClick={() => {
-                  setNewTask(task.name); // Pre-fill the popup input with the current task name
-                  setEditingIndex(index); // Set the index of the task being edited
-                  setShowPopup(true); // Show the popup for editing
+                  setNewTask(task.name);
+                  setEditingIndex(index);
+                  setShowPopup(true);
                 }}
               >
                 Edit
@@ -644,19 +657,16 @@ const handleSave = async () => {
         />
       </div>
 
-      <div
-        style={{
-          position: "absolute",
-          top: "170px",
-          left: "850px",
-          width: "150px",
-          color: "#6F5A30",
-          fontWeight: "bold",
-          fontSize: "1.2rem",
-        }}
-      >
-        🔥 Current Streak: {streak} task{streak === 1 ? "" : "s"}
+      {/* Streak Counter */}
+      <div style={{ 
+        fontWeight: "bold", 
+        fontSize: "1rem", 
+        marginBottom: "10px", 
+        color: "#6F5A30" 
+      }}>
+        🔥 Streak: {streak} day{streak === 1 ? "" : "s"}
       </div>
+
 
     </div>
   );
