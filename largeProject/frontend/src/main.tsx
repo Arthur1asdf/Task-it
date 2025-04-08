@@ -9,6 +9,7 @@ import Home from "./pages/home";
 import Forgetpassword from "./pages/forgetpassword";
 import Resetpassword from "./pages/resetpassword";
 import Calendar from "./pages/calender";
+import VerifyEmail from "./pages/verifyEmail";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -19,7 +20,8 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/home" element={<Home />} />
         <Route path="*" element={<Login />} /> {/* Default Route */}
         <Route path="/forgetpassword" element={<Forgetpassword />} />
-        <Route path="/resetpassword" element={<Resetpassword />} />
+        <Route path="/reset-password/:token" element={<Resetpassword />} />
+        <Route path="/verify-email/:token" element={<VerifyEmail />} />
         <Route path="/calender" element={<Calendar />} />
       </Routes>
     </Router>

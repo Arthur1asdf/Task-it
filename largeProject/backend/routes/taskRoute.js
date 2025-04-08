@@ -9,7 +9,7 @@ module.exports = (db) => {
   //get tasks route here
   router.get("/get-week-tasks", async (req, res) => {
     try {
-      // http://localhost:5000/api/taskRoute/get-week-tasks?userId=67bfe1d7601fd1ede10e5e71&taskDate=2025-03-25
+      // http://task-it.works/api/taskRoute/get-week-tasks?userId=67bfe1d7601fd1ede10e5e71&date=2025-03-25
       const { userId, date } = req.query;
       if (!userId || !date) {
         return res.status(400).json({ message: "User ID is required and Task date" });
@@ -163,7 +163,7 @@ module.exports = (db) => {
   //get tasks route here
   router.get("/get-tasks", async (req, res) => {
     try {
-      // http://localhost:5000/api/taskRoute/get-tasks?userId=67bfe1d7601fd1ede10e5e71&taskDate=2025-03-25
+      // http://task-it.works:5000/api/taskRoute/get-tasks?userId=67bfe1d7601fd1ede10e5e71&taskDate=2025-03-25
       const { userId, taskDate } = req.query;
       if (!userId || !taskDate) {
         return res.status(400).json({ message: "User ID is required and Task date" });

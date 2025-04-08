@@ -37,6 +37,8 @@ const Home: React.FC = () => {
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [streaks, setStreaks] = useState<Streak>();
+    const [streak, setStreak] = useState<number>(0);
+    const [streaksLoading, setStreaksLoading] = useState(true);
     const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -111,16 +113,22 @@ const Home: React.FC = () => {
     
     const fetchStreaks = async () => {
         try {
+            setStreaksLoading(true);
             const userId = await AsyncStorage.getItem("userId");
-
-            if (!userId) return;
-
+    
+            if (!userId) {
+                setStreaksLoading(false);
+                return;
+            }
+    
             const response = await TaskAPI.getStreaks(userId);
             if (response) {
                 setStreaks(response);
             }
         } catch (error) {
             console.error("Error fetching streaks", error);
+        } finally {
+            setStreaksLoading(false);
         }
     }
 
@@ -186,6 +194,9 @@ const Home: React.FC = () => {
           setTasks(prev =>
             prev.map(t => t._id === task._id ? { ...t, isCompleted: !task.isCompleted } : t)
           );
+
+          // refresh streaks after completing a task
+          fetchStreaks();
         } catch (err) {
           console.error('Failed to toggle task completion', err);
         }
@@ -219,7 +230,6 @@ const Home: React.FC = () => {
                                     </TouchableOpacity>
                                     <View style={styles.taskActions}>
                                         <TouchableOpacity onPress={() => handleEdit(task)} style={styles.taskActionsButtons}>
-                                            {/* <Text style={{color: "blue"}}>Edit</Text> */}
                                             <Image source={require("../../assets/images/pencilIcon.png")} style={{ width: 20, height: 20, marginRight: 8 }} />
                                         </TouchableOpacity>
                                     </View>
@@ -300,8 +310,7 @@ const Home: React.FC = () => {
             {/* Streaks */}
                 <View style={styles.streaksView}>
                     <Image source={require("../../assets/images/smallStickyNote.png")} style={styles.stickyNote} />
-                    <Text style={{ fontSize: 20, color: "rgb(124, 104, 93)", left: 54, top: 35 }}>Streak</Text>
-                    <Text style={{ fontSize: 36, fontWeight: "bold", left: 52, top: 36, color: "rgb(74, 60, 53)", shadowColor: "#000", shadowOffset: {width: 4, height: 4}, shadowOpacity: 0.3 }}>{streaks ? streaks.streak : "0"}</Text>
+                    <Text style={{ fontSize: 15, fontWeight: "bold", color: "rgb(124, 104, 93)", left: 54, top: 35, textAlign: "center" }}>🔥 Streak: {streaksLoading ? "..." : (streaks ? streaks.streak : "0")} {!streaksLoading && (streaks?.streak === 1 ? " task" : " tasks")}</Text>
                 </View>
             {/* Logout */}
             <TouchableOpacity onPress={handleLogout}>

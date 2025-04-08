@@ -51,14 +51,13 @@ const registerUser = async (username, email, password) => {
 };
 
 
-//  Forgot password
 const forgotPassword = async (Email) => {
     try {
-        // Send POST request to backend
-        const response = await axios.post(`${API_BASE_URL}/forgot-password`, { Email });
-        return response.data;  // Return the response data
+        const response = await axios.post(`${API_BASE_URL}/forgot-password/forgot-password`, { Email });
+        return response.data;
     } catch (error) {
-        handleError(error);  // Handle error
+        const errorMsg = error.response?.data?.error || "An error occurred";
+        return { success: false, error: errorMsg };
     }
 };
 

@@ -53,7 +53,7 @@ const SignUp = () => {
     setRgbColor("rgb(85, 70, 60)"); // Keep color
 
     try {
-      const response = await fetch("http://146.190.218.123:5000/api/register/register", {
+      const response = await fetch("http://task-it.works/api/register/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,8 +65,8 @@ const SignUp = () => {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        alert("Success!");
-        goToHome(); // Redirect to home after successful registration
+        alert("Success! Check your email to verify your account");
+        goToLogin(); // Redirect to login after successful registration
       } else {
         alert(data.message || "Error occurred");
       }

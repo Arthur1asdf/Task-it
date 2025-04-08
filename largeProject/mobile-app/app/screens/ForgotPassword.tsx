@@ -10,18 +10,26 @@ const ForgotPassword: React.FC = () => {
 
     // POST request to forgot password endpoint
     const handleForgotPassword = async (): Promise<void> => {
+        if (!email.trim()) {
+            Alert.alert("Please enter an email address.");
+            return;
+        }
+    
         try {
-            const result = await forgotPassword(email);
-            if (result.success) {
-                Alert.alert("Check your email for password reset instructions.");
+            const result = await forgotPassword(email.trim().toLowerCase());
+    
+            if (result?.message) {
+                Alert.alert("Success", result.message);
+            } else if (result?.error) {
+                Alert.alert("Error", result.error);
             } else {
-                Alert.alert("Error", result.error || "An unexpected error occurred.");
+                Alert.alert("Password reset request failed", "Unknown error");
             }
         } catch (error) {
             console.error("Forgot Password Error:", error);
-            Alert.alert("Error", "An unexpected error occurred.");
+            Alert.alert("Error", "Failed to send reset link");
         }
-    };
+    };    
 
     return (
         <ImageBackground
@@ -36,7 +44,6 @@ const ForgotPassword: React.FC = () => {
                     <Text style={styles.title}>Forgot Password</Text>
                     <Text style={styles.description}>Enter your email address and we will send you instructions to reset your password.</Text>
                     
-
                     <TextInput
                         style={styles.input}
                         placeholder="Email"
@@ -44,7 +51,7 @@ const ForgotPassword: React.FC = () => {
                         value={email}
                     />
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={() => { handleForgotPassword }} style={styles.resetButton}>
+                        <TouchableOpacity onPress={handleForgotPassword} style={styles.resetButton}>
                             <Text style={styles.buttonText}>Send Reset Email</Text>
                         </TouchableOpacity>
                         

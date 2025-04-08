@@ -50,7 +50,7 @@ const getNextWeekdayDates = (weekdayDates: string[], startDate: Date): string[] 
 };
   
 
-const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ navigation }) => {
+const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = () => {
     const [groupedTasks, setGroupedTasks] = useState<GroupedTasks>({});
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
@@ -121,8 +121,8 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ navigation }) =
     
                 // Ensure at least today's date is included if no days are selected
                 let formattedDays = selectedDays.length > 0 
-                    ? getNextWeekdayDates(selectedDays, selectedDate) // for recurring tasks 
-                    : [selectedDate.toISOString().split("T")[0]]; // for one-time tasks
+                    ? getNextWeekdayDates(selectedDays, getStartOfWeek(selectedDate)) // for recurring tasks 
+                    : [addTaskDate || selectedDate.toISOString().split("T")[0]]; // for one-time tasks
     
                 console.log("Task being sent:", {
                     userId,
@@ -177,7 +177,7 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ navigation }) =
 
     return (
     <ScrollView contentContainerStyle={{ padding: 16 }}>
-        <Button title="← Back to Home" onPress={() => router.replace("/")} />
+        <Button title="← Back to Home" onPress={() => router.replace("../Home")} />
         {/* Pickers */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             {/* Year picker */}
@@ -221,14 +221,14 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ navigation }) =
             const todayStr = formatDateOnly(new Date());
             const dayTasks = groupedTasks[dateStr] || [];
             const isToday = dateStr === todayStr;
-            const isSelected = formatDateOnly(selectedDate) === dateStr;
+            //const isSelected = formatDateOnly(selectedDate) === dateStr;
 
         return (
             <View
                 key={index}
                 style={{
                 marginBottom: 20,
-                backgroundColor: isSelected ? '#E0F7FA' : 'transparent',
+                backgroundColor: isToday ? '#E0F7FA' : 'transparent',
                 padding: 10,
                 borderRadius: 8,
                 }}
@@ -262,13 +262,20 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ navigation }) =
                 <View key={task._id} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
                     
                     {/* Checkbox for task */}
-                    <Checkbox
-                        status={task.isCompleted ? 'checked' : 'unchecked'}
-                        onPress={() => handleToggleComplete(task._id, task.isCompleted)}
-                    />
-
+                    <View style={{
+                        backgroundColor: '#rgba(234, 200, 255, 0.33)',
+                        borderRadius: 20,
+                        padding: 0.1,
+                        marginRight: 10,
+                        marginTop: 3,
+                    }}>
+                        <Checkbox
+                            status={task.isCompleted ? 'checked' : 'unchecked'}
+                            onPress={() => handleToggleComplete(task._id, task.isCompleted)}
+                        />
+                    </View>
                     {/* Task name */}
-                    <Text style={task.isCompleted ? styles.uncompletedTask : styles.completedTask}>{task.name}</Text>
+                    <Text style={task.isCompleted ? styles.completedTask : styles.uncompletedTask}>{task.name}</Text>
                     
                     {/* Edit task button */}
                     <TouchableOpacity onPress={() => handleEdit(task)} style={styles.editButton}>
@@ -284,50 +291,55 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ navigation }) =
         {/* Add Task Modal */}
         <Button title="Add Task" onPress={() => setShowAddModal(true)} />
         <Modal visible={showAddModal} animationType="slide" onRequestClose={() => setShowAddModal(false)}>
-            <View style={{ padding: 20, marginTop: 60, alignItems: 'center' }}>
+            <View style={{ padding: 20, marginTop: 100, alignItems: 'center' }}>
                 <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
                     Add Task{addTaskDate ? ` for ${addTaskDate}` : ''}
                 </Text>
 
-                {/* TODO: Add input, weekday checkboxes for current week, and submit button */}
+                {/* Input for task name */}
                 <Text style={{ marginTop: 16 }}>Task Name:</Text>
                 <TextInput
-                value={newTask}
-                onChangeText={setNewTask}
-                placeholder="Enter task name"
-                style={{ borderWidth: 1, borderColor: '#ccc', padding: 8, marginBottom: 12 }}
+                    value={newTask}
+                    onChangeText={setNewTask}
+                    placeholder="Enter task name"
+                    style={{ borderWidth: 1, borderColor: '#ccc', padding: 8, marginBottom: 12 }}
                 />
 
-                <Text>Select Days This Week:</Text>
-                {daysOfWeek.map((date, i) => {
-                    const dateStr = formatDateOnly(date);
-                    const label = date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-                    return (
-                        <View key={dateStr} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
-                            <View style={{
-                                borderWidth: 1,
-                                borderColor: '#888',
-                                borderRadius: 20,
-                                padding: 2,
-                                marginRight: 10,
-                                marginTop: 3,
-                            }}>
-                            <Checkbox
-                                status={selectedDays.includes(dateStr) ? 'checked' : 'unchecked'}
-                                onPress={() => {
-                                if (selectedDays.includes(dateStr)) {
-                                    setSelectedDays(selectedDays.filter(d => d !== dateStr));
-                                } else {
-                                    setSelectedDays([...selectedDays, dateStr]);
-                                }
-                                }}
-                                uncheckedColor="#888"
-                            />
+                {/* Only show weekday selection if NOT editing */}
+                {!editingTask && (
+                <>
+                    <Text>Select Days This Week:</Text>
+                    {daysOfWeek.map((date, i) => {
+                        const dateStr = formatDateOnly(date);
+                        const label = date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+                        return (
+                            <View key={dateStr} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                                <View style={{
+                                    borderWidth: 1,
+                                    borderColor: '#888',
+                                    borderRadius: 20,
+                                    padding: 2,
+                                    marginRight: 10,
+                                    marginTop: 3,
+                                }}>
+                                <Checkbox
+                                    status={selectedDays.includes(dateStr) ? 'checked' : 'unchecked'}
+                                    onPress={() => {
+                                        if (selectedDays.includes(dateStr)) {
+                                            setSelectedDays(selectedDays.filter(d => d !== dateStr));
+                                        } else {
+                                            setSelectedDays([...selectedDays, dateStr]);
+                                        }
+                                    }}
+                                    uncheckedColor="#888"
+                                />
+                                </View>
+                                <Text style={{ flexShrink: 1, marginTop: 4}}>{label}</Text>
                             </View>
-                            <Text style={{ flexShrink: 1, marginTop: 4}}>{label}</Text>
-                        </View>
-                    );
-                })}
+                        );
+                    })}
+                    </>
+                )}
 
                 <View style={styles.buttonContainer}>
                     {/* Delete Button - Only Show If Editing a Task */}
@@ -343,7 +355,7 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ navigation }) =
                     </TouchableOpacity>
                     
                     {/* Save button */}
-                    <TouchableOpacity onPress={() => handleSave}  style={styles.saveButton}>
+                    <TouchableOpacity onPress={handleSave}  style={styles.saveButton}>
                         <Text style={styles.saveText}>Save</Text>
                     </TouchableOpacity>
                 </View>
@@ -354,11 +366,11 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = ({ navigation }) =
 };
 
 const styles = StyleSheet.create({
-    uncompletedTask: {
+    completedTask: {
         textDecorationLine: 'line-through',
         color: '#888',
     },
-    completedTask: {
+    uncompletedTask: {
         textDecorationLine: 'none',
         color: '#000',
     },
@@ -375,7 +387,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
     },
     saveButton: {
-        width: '20%',
+        width: '30%',
         alignItems: 'center',
         padding: 8,
         marginTop: 10,
@@ -385,7 +397,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     cancelButton:{
-        width: '20%',
+        width: '30%',
         alignItems: 'center',
         padding: 8,
         marginTop: 10,
@@ -395,7 +407,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     deleteButton:{
-        width: '20%',
+        width: '30%',
         alignItems: 'center',
         padding: 8,
         marginTop: 10,

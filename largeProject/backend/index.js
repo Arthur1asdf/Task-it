@@ -25,6 +25,7 @@ MongoClient.connect(MONGO_URI, { useUnifiedTopology: true })
     const taskRoute = require("./routes/taskRoute")(db);
     const forgotPasswordRoute = require("./routes/forgotPasswordRoute")(db);
     const resetPasswordRoute = require("./routes/resetPasswordRoute")(db);
+    const verifyEmailRoute = require("./routes/verifyEmailRoute")(db);
 
     app.use("/api/register", registerRoute);
     app.use("/api/login", loginRoute);
@@ -32,6 +33,7 @@ MongoClient.connect(MONGO_URI, { useUnifiedTopology: true })
     app.use("/api/taskRoute", taskRoute);
     app.use("/api/forgot-password", forgotPasswordRoute);
     app.use("/api/reset-password", resetPasswordRoute);
+    app.use("/api/verify-email", verifyEmailRoute);
 
     //frontend static files//////////////////////////////////////////
     app.use(express.static(path.join(__dirname, "../frontend/dist")));
