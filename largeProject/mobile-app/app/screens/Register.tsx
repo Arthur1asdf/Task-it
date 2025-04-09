@@ -22,6 +22,12 @@ const Register: React.FC = () => {
         number: false,
     });
 
+    // Validate email
+    const validateEmail = (email: string) => {
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        return emailRegex.test(email);
+    }
+
     // Validate password complexity
     const validatePassword = (password: string) => {
         const length = password.length >= 8;
@@ -48,6 +54,11 @@ const Register: React.FC = () => {
     const handleRegister = async (): Promise<void> => {
         if (!validatePassword(password)) {
             Alert.alert("Please fulfill all password requirements.");
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            Alert.alert("Invalid Email", "Please enter a valid email address.");
             return;
         }
 
@@ -86,6 +97,7 @@ const Register: React.FC = () => {
 
                 <TextInput
                     style={styles.input}
+                    keyboardType='email-address'
                     placeholder="Email"
                     onChangeText={setEmail}
                     value={email}

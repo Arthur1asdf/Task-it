@@ -49,10 +49,6 @@ const Login: React.FC = () => {
                     onChangeText={setUsername}
                     value={username}
                 />
-                <TouchableOpacity onPress={() => router.navigate("./ForgotUsername")}>
-                    <Text style={styles.link}>Forgot Username?</Text>
-                </TouchableOpacity>
-
                 <TextInput
                     style={styles.input}
                     placeholder="Password"
@@ -96,9 +92,10 @@ const styles = StyleSheet.create({
         marginTop: "40%",
     },
     title: {
-        fontSize: 16,
+        fontSize: 25,
         fontWeight: "bold",
         color: "rgb(85, 70, 60)",
+        fontFamily: "Quicksand",
     },
     input: {
         width: "100%",
@@ -106,9 +103,9 @@ const styles = StyleSheet.create({
         borderBottomColor: "rgb(85, 70, 60)",
         color: "rgb(85, 70, 60)",
         fontSize: 14,
-        paddingVertical: 4,
+        paddingVertical: 8,
         marginBottom: 6,
-    } as const, // Explicitly mark it as read-only to avoid TS warnings
+    } as const, // Explicitly marked as read-only to avoid TS warnings
     link: {
         fontSize: 10,
         color: "rgb(182, 160, 147)",
@@ -141,6 +138,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#fff",
         fontWeight: "bold",
+        fontFamily: "Quicksand",
     },
 });
 

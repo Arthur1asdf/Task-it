@@ -65,9 +65,6 @@ const Home: React.FC = () => {
   }, []);
   
   
-  
-
-
   // Get formatted current date (MM/DD/YYYY)
   const formatDate = (date: Date) => {
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -120,74 +117,73 @@ const Home: React.FC = () => {
   
       const data = await response.json();
       console.log("Streak data:", data);
+      // after server is updated, change data.streak to data
       setStreak(data.streak);
     } catch (error) {
       console.error("Error fetching streak:", error);
     }
   };
-  
-  
 
-// Save or update task
-const handleSave = async () => {
-  if (!userId) {
-    console.error("No user ID cannot save task.");
-    return;
-  }
+  // Save or update task
+  const handleSave = async () => {
+    if (!userId) {
+      console.error("No user ID cannot save task.");
+      return;
+    }
 
-  if (newTask.trim()) {
-    let datesToSave: string[] = [];
+    if (newTask.trim()) {
+      let datesToSave: string[] = [];
 
-    if (selectedDays.length > 0) {
-      const current = new Date(currentDate); // use the currently viewed date
-      const startOfWeek = new Date(current);
-      startOfWeek.setDate(current.getDate() - current.getDay());
+      if (selectedDays.length > 0) {
+        const current = new Date(currentDate); // use the currently viewed date
+        const startOfWeek = new Date(current);
+        startOfWeek.setDate(current.getDate() - current.getDay());
 
-      for (let i = 0; i < 7; i++) {
-        const date = new Date(startOfWeek);
-        date.setDate(startOfWeek.getDate() + i);
-        const dayName = fullDayNames[date.getDay()];
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(startOfWeek);
+          date.setDate(startOfWeek.getDate() + i);
+          const dayName = fullDayNames[date.getDay()];
 
-        if (selectedDays.includes(dayName)) {
-          datesToSave.push(date.toISOString().split("T")[0]);
+          if (selectedDays.includes(dayName)) {
+            datesToSave.push(date.toISOString().split("T")[0]);
+          }
+        }
+      } else {
+        // If no specific weekdays selected just use the currently selected date
+        datesToSave = [currentDate.toISOString().split("T")[0]];
+      }
+
+      if (editingIndex !== null) {
+        const taskId = tasks[editingIndex]._id;
+        await editTask(taskId, newTask); 
+      } else {
+        const response = await fetch("http://task-it.works/api/taskRoute/add-task", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userId,
+            taskName: newTask,
+            taskDates: datesToSave,
+          }),
+        });
+
+        if (response.ok) {
+          const createdTask = await response.json();
+          setTasks((prevTasks) => [...prevTasks, createdTask]);
+        } else {
+          console.error("Failed to save task");
         }
       }
-    } else {
-      // If no specific weekdays selected just use the currently selected date
-      datesToSave = [currentDate.toISOString().split("T")[0]];
+
+      // Reset state and close the popup
+      fetchTasks();
+      setNewTask("");
+      setSelectedDays([]);
+      setShowPopup(false);
     }
-
-    if (editingIndex !== null) {
-      const taskId = tasks[editingIndex]._id;
-      await editTask(taskId, newTask); 
-    } else {
-      const response = await fetch("http://task-it.works/api/taskRoute/add-task", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: userId,
-          taskName: newTask,
-          taskDates: datesToSave,
-        }),
-      });
-
-      if (response.ok) {
-        const createdTask = await response.json();
-        setTasks((prevTasks) => [...prevTasks, createdTask]);
-      } else {
-        console.error("Failed to save task");
-      }
-    }
-
-    // Reset state and close the popup
-    fetchTasks();
-    setNewTask("");
-    setSelectedDays([]);
-    setShowPopup(false);
-  }
-};
+  };
   
      
   const editTask = async (taskId: string, newTaskName: string) => {
@@ -359,20 +355,20 @@ const handleSave = async () => {
 
   return (
     <div
-    style={{
-      width: "100%",
-      height: "100vh",
-      backgroundImage: `url(${background})`,
-      backgroundPosition: "center",
-      backgroundSize: "cover",
-      backgroundAttachment: "fixed",
-      display: "flex",
-      justifyContent: "start",
-      alignItems: "center",
-      position: "relative",
-      paddingLeft: "50px",
-    }}
-  >
+      style={{
+        width: "100%",
+        height: "100vh",
+        backgroundImage: `url(${background})`,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+        display: "flex",
+        justifyContent: "start",
+        alignItems: "center",
+        position: "relative",
+        paddingLeft: "50px",
+      }}
+    >
     {/* Board */}
     <div
       style={{
@@ -387,7 +383,7 @@ const handleSave = async () => {
         backgroundPosition: "center",
         zIndex: 1,
       }}
-      >
+    >
   
     {/* Task Box */}
     <div

@@ -18,7 +18,7 @@ const SignUp = () => {
   const navigate = useNavigate(); // Use navigate instead of window.location
 
   const goToLogin = () => navigate("/login");
-  const goToHome = () => navigate("/home");
+  //const goToHome = () => navigate("/home");
 
   // Password complexity validation (without special characters)
   const validatePassword = (password: string) => {
