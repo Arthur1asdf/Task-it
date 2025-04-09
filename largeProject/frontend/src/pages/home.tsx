@@ -6,7 +6,7 @@ import background from "../Images/HomeDesktop/HomeDesktopBackground.png";
 import calender from "../Images/HomeDesktop/calender.png";
 import logout from "../Images/HomeDesktop/logout.png";
 import board from "../Images/HomeDesktop/board.png";
-import streak from "../Images/HomeDesktop/HomeDesktopStreak.png";
+//import streak from "../Images/HomeDesktop/HomeDesktopStreak.png";
 
 interface Task {
   _id: string;
@@ -41,6 +41,8 @@ const Home: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [userId, setUserId] = useState<string | null>(null);
   const [streak, setStreak] = useState<number>(0); 
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
 
   const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
   const fullDayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -267,11 +269,11 @@ const handleSave = async () => {
   
   // Delete a task
   const handleDelete = () => {
-    if (editingIndex !== null) {
-      const taskIdToDelete = tasks[editingIndex]._id;
-      deleteTask(taskIdToDelete);
-    }
+    setShowPopup(false);             // Close the edit popup
+    setShowDeleteConfirm(true);     // Open the confirmation popup
   };
+  
+  
   
 
   const handleToggleComplete = async (taskId: string, currentStatus: boolean, userId: string | null) => {
@@ -536,6 +538,70 @@ const handleSave = async () => {
         +
       </div>
     </div>
+
+    {showDeleteConfirm && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 999,
+          }}
+        > 
+          <div
+            style={{
+              backgroundColor: "#fff7e6",
+              padding: "1.5rem",
+              borderRadius: "8px",
+              border: "2px solid #6F5A30",
+              width: "300px",
+              textAlign: "center",
+            }}
+          >
+            <p style={{ marginBottom: "1rem" }}>Are you sure you want to delete this task?</p>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <button
+                onClick={() => {
+                  if (editingIndex !== null) {
+                    const taskIdToDelete = tasks[editingIndex]._id;
+                    deleteTask(taskIdToDelete);
+                    setShowDeleteConfirm(false);
+                  }
+                }}
+                style={{
+                  backgroundColor: "#B91C1C",
+                  color: "white",
+                  padding: "0.5rem 1rem",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                style={{
+                  backgroundColor: "#6F5A30",
+                  color: "white",
+                  padding: "0.5rem 1rem",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
   
     {/* Calendar Container */}
     <div
