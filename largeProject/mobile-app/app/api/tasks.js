@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_BASE_URL } from '../../config';
+//import AsyncStorage from '@react-native-async-storage/async-storage';  // Import AsyncStorage
 
 const API_URL = `${API_BASE_URL}/taskRoute`;
 
@@ -88,7 +89,14 @@ const TaskAPI = {
   getStreaks: async (userId) => {
     try {
       const response = await axios.get(`${API_URL}/streaks`, { params: { userId } });
-      return response.data;
+      
+      console.log("Streaks fetched successfully!", response.data.streak, response.data.lastActivity);
+      
+      // if (response.data.lastActivity) {
+      //   await AsyncStorage.setItem("lastActivity", response.data.lastActivity);
+      // }
+
+      return response.data.streak;
     } catch (error) {
       console.error('Error fetching streaks:', error);
       throw new Error('Failed to fetch streaks');

@@ -256,23 +256,35 @@ module.exports = (db) => {
         const user = await User.findOne({ _id: new ObjectId(String(userId)) });
         const lastActivity = user.lastActivity ? new Date(user.lastActivity) : null;
 
+        // Reset lastActivity time part to midnight for accurate day comparison
+        if (lastActivity) {
+          lastActivity.setHours(0, 0, 0, 0);
+        }
+
         let newStreak;
-        if (!lastActivity) {
-          // No previous activity—start a new streak.
-          newStreak = 1;
-        } else {
-          // Create a Date for yesterday.
+
+        // Case 1: User already completed a task today
+        if (lastActivity && lastActivity.getTime() === today.getTime()) {
+          // Keep the current streak (already updated for today)
+          newStreak = currentUser.streak;
+        } 
+
+        // Case 2: User completed a task yesterday (continue streak)
+        else if (lastActivity) {
           const yesterday = new Date(today);
           yesterday.setDate(yesterday.getDate() - 1);
-
-          // Check if lastActivity is exactly yesterday (ignoring time).
-          if (lastActivity.getFullYear() === yesterday.getFullYear() && lastActivity.getMonth() === yesterday.getMonth() && lastActivity.getDate() === yesterday.getDate()) {
-            // Continue the streak.
-            newStreak = user.streak + 1;
+          
+          if (lastActivity.getTime() === yesterday.getTime()) {
+            // Continue the streak
+            newStreak = currentUser.streak + 1;
           } else {
-            // If the last activity is not yesterday, reset the streak.
+            // Last activity was before yesterday, reset streak
             newStreak = 1;
           }
+        } 
+        // Case 3: No previous activity recorded
+        else {
+          newStreak = 1; // Start a new streak
         }
 
         await User.updateOne({ _id: new ObjectId(String(userId)) }, { $set: { lastActivity: new Date(), streak: newStreak } });
@@ -309,6 +321,7 @@ module.exports = (db) => {
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
+
   //task deletion route here
   router.delete("/delete-task", async (req, res) => {
     try {

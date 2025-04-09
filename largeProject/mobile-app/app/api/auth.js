@@ -26,7 +26,7 @@ const loginUser = async (username, password) => {
         }
     } catch (error) {
         console.error("Login error:", error.response?.data || error.message);
-        return { error: error.response?.data?.message || "Login failed. Please try again." };
+        return { error: error.response?.data?.error || "Login failed. Please try again." };
     }
 };
 

@@ -123,7 +123,7 @@ const Home: React.FC = () => {
     
             const response = await TaskAPI.getStreaks(userId);
             if (response) {
-                setStreaks(response);
+                setStreak(response);
             }
         } catch (error) {
             console.error("Error fetching streaks", error);
@@ -177,7 +177,11 @@ const Home: React.FC = () => {
         } catch (error) {
             console.error("Error deleting task", error);
         }
+        fetchTasks();
         setShowPopup(false);
+        setNewTask("");
+        setSelectedDays([]);
+        setEditingTask(null);
     };
 
     const handleEdit = (task: Task) => {
@@ -218,7 +222,7 @@ const Home: React.FC = () => {
                             <Button onPress={() => handleDateChange(1)}>{">"}</Button>
                         </View>
                     </View>
-                    <Text>{format(selectedDate, "EEEE, MMM d")}</Text>
+                    <Text style={styles.date}>{format(selectedDate, "EEEE, MMM d")}</Text>
 
                     <View style={{ marginTop: 10 }}>
                             {tasks.map((task) => (
@@ -270,7 +274,6 @@ const Home: React.FC = () => {
                                             borderWidth: 1,
                                             alignItems: "center",
                                             justifyContent: "center",
-                                            cursor: "pointer",
                                         }}
                                     >
                                         <Text style={{ fontWeight: "bold", color: selectedDays.includes(weekdays[index]) ? "#6F5A30" : "#000" }}>
@@ -309,8 +312,9 @@ const Home: React.FC = () => {
 
             {/* Streaks */}
                 <View style={styles.streaksView}>
-                    <Image source={require("../../assets/images/smallStickyNote.png")} style={styles.stickyNote} />
-                    <Text style={{ fontSize: 15, fontWeight: "bold", color: "rgb(124, 104, 93)", left: 54, top: 35, textAlign: "center" }}>🔥 Streak: {streaksLoading ? "..." : (streaks ? streaks.streak : "0")} {!streaksLoading && (streaks?.streak === 1 ? " task" : " tasks")}</Text>
+                    <Image source={require("../../assets/images/StreakNote.png")} style={styles.stickyNote} />
+                    <Text style={{ fontSize: 18, fontWeight: "bold", color: "rgb(124, 104, 93)", left: 22, top: 20, textAlign: "center" }}>🔥 Streak:</Text>
+                    <Text style={{ fontSize: 18, fontWeight: "bold", color: "rgb(124, 104, 93)", left: 22, top: 20, textAlign: "center" }}>{streaksLoading ? "..." : streak} {!streaksLoading && (streak === 1 ? " day" : " days")}</Text>
                 </View>
             {/* Logout */}
             <TouchableOpacity onPress={handleLogout}>
@@ -366,21 +370,23 @@ const styles = StyleSheet.create({
         width: "30%",
     },
     title: {
-        fontSize: 16,
+        fontSize: 22,
         fontWeight: "bold",
         textAlign: "left",
+        fontFamily: "Jua",
     },
     navButtons:{
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginLeft: 50,
+        marginLeft: 45,
     },
     date: {
-        fontSize: 10,
-        fontWeight: "bold",
-        color: "rgb(149, 129, 118)",
+        fontSize: 14,
+        fontWeight: "light",
+        color: "rgb(109, 92, 83)",
         textAlign: "left",
+        fontFamily: "Quicksand",
     },
     taskSummary: {
         marginTop: 10,
@@ -390,6 +396,7 @@ const styles = StyleSheet.create({
     taskSummaryText: {
         fontSize: 14,
         textAlign: "center",
+        fontFamily: "HappyMonkey",
     },
     taskItem: {
         flexDirection: "row",
@@ -399,10 +406,12 @@ const styles = StyleSheet.create({
     completedTask: {
         textDecorationLine: "line-through",
         color: "gray",
+        fontFamily: "HappyMonkey",
     },
     uncompletedTask: {
         textDecorationLine: "none",
         color: "black",
+        fontFamily: "HappyMonkey",
     },
     taskActions: {
         flexDirection: "row",
@@ -505,10 +514,10 @@ const styles = StyleSheet.create({
     },
     streaksView: {
         position: "absolute",
-        width: 90,
+        width: 84,
         height: 80,
-        top: 680,
-        left: -22,
+        top: 630,
+        left: 20,
         backgroundImage: "../../assets/images/smallSticky.png",
         // backgroundColor: "#FDEEC0",
         // borderColor: "#6a5428",
@@ -517,6 +526,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         alignItems: "center",
         justifyContent: "center",
+        transform: [{scale: 0.7}],
     },
     calendarIcon: {
         position: "absolute",
