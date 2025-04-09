@@ -119,7 +119,6 @@ const Home: React.FC = () => {
   
       const data = await response.json();
       console.log("Streak data:", data);
-      // after server is updated, change data.streak to data
       setStreak(data.streak);
     } catch (error) {
       console.error("Error fetching streak:", error);

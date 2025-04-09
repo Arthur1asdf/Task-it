@@ -24,7 +24,7 @@ module.exports = (db) => {
       const hashedPassword = await bcrypt.hash(Password, saltRounds);
       const verificationToken = crypto.randomBytes(32).toString("hex");
 
-      const newUser = { Username, Email, Password: hashedPassword, isVerified: false, verificationToken };
+      const newUser = { Username, Email, Password: hashedPassword, isVerified: false, verificationToken, streak: 0 };
       await usersCollection.insertOne(newUser);
 
       const verificationLink = `http://task-it.works/api/verify-email/${verificationToken}`;

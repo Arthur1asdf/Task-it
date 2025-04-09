@@ -36,7 +36,6 @@ const Home: React.FC = () => {
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-    const [streaks, setStreaks] = useState<Streak>();
     const [streak, setStreak] = useState<number>(0);
     const [streaksLoading, setStreaksLoading] = useState(true);
     const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -77,6 +76,15 @@ const Home: React.FC = () => {
     };
 
     useEffect(() => {
+        const loadCachedStreak = async () => {
+            const cachedStreak = await AsyncStorage.getItem("currentStreak");
+            if (cachedStreak) {
+                setStreak(parseInt(cachedStreak, 10));
+            }
+        };
+        
+        loadCachedStreak();
+
         fetchTasks();
         fetchStreaks();
     }, [selectedDate]);
@@ -193,7 +201,7 @@ const Home: React.FC = () => {
 
     const handleToggleComplete = async (task: Task) => {
         try {
-          const updatedTask = await TaskAPI.completeTask(task.userId, task._id, !task.isCompleted);
+          await TaskAPI.completeTask(task.userId, task._id, !task.isCompleted);
           
           setTasks(prev =>
             prev.map(t => t._id === task._id ? { ...t, isCompleted: !task.isCompleted } : t)
@@ -313,8 +321,8 @@ const Home: React.FC = () => {
             {/* Streaks */}
                 <View style={styles.streaksView}>
                     <Image source={require("../../assets/images/StreakNote.png")} style={styles.stickyNote} />
-                    <Text style={{ fontSize: 18, fontWeight: "bold", color: "rgb(124, 104, 93)", left: 22, top: 20, textAlign: "center" }}>🔥 Streak:</Text>
-                    <Text style={{ fontSize: 18, fontWeight: "bold", color: "rgb(124, 104, 93)", left: 22, top: 20, textAlign: "center" }}>{streaksLoading ? "..." : streak} {!streaksLoading && (streak === 1 ? " day" : " days")}</Text>
+                    <Text style={{ fontSize: 18, fontFamily: "PermanentMarker", fontWeight: "bold", color: "rgb(124, 104, 93)", left: 22, top: 16, textAlign: "center" }}>Streak:</Text>
+                    <Text style={{ fontSize: 18, fontFamily: "PermanentMarker", fontWeight: "bold", color: "rgb(124, 104, 93)", left: 22, top: 20, textAlign: "center" }}>{streaksLoading ? "..." : streak} {!streaksLoading && (streak === 1 ? " day" : " days")}</Text>
                 </View>
             {/* Logout */}
             <TouchableOpacity onPress={handleLogout}>
@@ -370,7 +378,7 @@ const styles = StyleSheet.create({
         width: "30%",
     },
     title: {
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: "bold",
         textAlign: "left",
         fontFamily: "Jua",

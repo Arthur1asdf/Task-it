@@ -58,11 +58,14 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = () => {
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
     const [newTask, setNewTask] = useState<string>('');
     const [editingTask, setEditingTask] = useState<Task | null>(null);
+    const [streak, setStreak] = useState<number>(0);
+    const [streaksLoading, setStreaksLoading] = useState(true);
 
     const router = useRouter();
 
     useEffect(() => {
         loadWeekTasks();
+        fetchStreaks();
     }, [selectedDate]);
 
     const loadWeekTasks = async () => {
@@ -91,12 +94,36 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = () => {
         }
     };
 
+    const fetchStreaks = async () => {
+        try {
+            setStreaksLoading(true);
+            const userId = await AsyncStorage.getItem("userId");
+    
+            if (!userId) {
+                setStreaksLoading(false);
+                return;
+            }
+    
+            const response = await TaskAPI.getStreaks(userId);
+            if (response !== undefined && response !== null) {
+                setStreak(response);
+                // Cache the streak value
+                await AsyncStorage.setItem("currentStreak", response.toString());
+            }
+        } catch (error) {
+            console.error("Error fetching streaks", error);
+        } finally {
+            setStreaksLoading(false);
+        }
+    }
+
     const handleToggleComplete = async (taskId: string, isCompleted: boolean): Promise<void> => {
         try {
             const userId = await AsyncStorage.getItem("userId");
             if (!userId) return;
             await TaskAPI.completeTask(userId, taskId, !isCompleted);
             await loadWeekTasks();
+            await fetchStreaks();
         } catch (error) {
             console.error("Toggle failed:", error);
         }

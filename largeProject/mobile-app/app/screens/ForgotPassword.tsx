@@ -97,8 +97,8 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
     },
     image: {
-        width: '90%',
-        height: '40%',
+        width: '95%',
+        height: '43%',
         position: 'absolute',
         top: '25%',
         justifyContent: 'center',
@@ -107,13 +107,14 @@ const styles = StyleSheet.create({
     container: {
         width: '80%',
         padding: 20,
-        marginTop: '-10%',
+        marginTop: '-5%',
         alignItems: 'center',
         justifyContent: 'center',
     },
     title: {
-        fontSize: 32,
+        fontSize: 28,
         fontWeight: 'bold',
+        fontFamily: "Jua",
         marginBottom: 10,
         color: 'rgb(85, 70, 60)',
     },
@@ -137,8 +138,8 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: "column",
         justifyContent: "space-between",
-        width: "60%",
-        height: 100,
+        width: "70%",
+        height: 115,
         marginTop: 8,
     },
     loginButton: {
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
     },
     resetButton: {
         flex: 1,
-        padding: 2,
+        padding: 4,
         height: 80,
         backgroundColor: "rgb(85, 70, 60)",
         borderRadius: 12,
