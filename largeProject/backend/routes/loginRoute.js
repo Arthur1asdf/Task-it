@@ -24,10 +24,10 @@ module.exports = (db, JWT_SECRET) => {
       }
 
       //  check if user's email has been verified
-      const isVerified = user.isEmailVerified;
-      if (!isVerified){
-        return res.status(400).json({ error: "Verify your email before signing in"});
-      }
+      // const isVerified = user.isEmailVerified;
+      // if (!isVerified){
+      //   return res.status(400).json({ error: "Verify your email before signing in"});
+      // }
 
       //  check if password for user matches inputted password
       const isMatch = await bcrypt.compare(Password, user.Password);

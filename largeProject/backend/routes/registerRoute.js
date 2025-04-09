@@ -27,7 +27,7 @@ module.exports = (db) => {
       const newUser = { Username, Email, Password: hashedPassword, isVerified: false, verificationToken, streak: 0 };
       await usersCollection.insertOne(newUser);
 
-      const verificationLink = `http://task-it.works/api/verify-email/${verificationToken}`;
+      const verificationLink = `http://task-it.works/verify-email/${verificationToken}`;
       await sendEmail(Email, "Verify Your Email", `Click the following link to verify your email: ${verificationLink}`);
 
       res.status(201).json({ message: "User registered successfully. Check your email to verify your account." });
