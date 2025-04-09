@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Button, Modal, StyleSheet, TextInput, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Button, Modal, StyleSheet, TextInput, Image, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useRouter } from 'expo-router';
 import { Checkbox } from 'react-native-paper';
-import { format, parseISO, set } from 'date-fns';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskAPI from '../../api/tasks';
 
@@ -176,16 +175,39 @@ const WeeklyCalendarView: React.FC<WeeklyCalendarViewProps> = () => {
     };    
 
     const handleDelete = async (taskId: string) => {
-        try {
-            const userId = await AsyncStorage.getItem('userId');
-            if (userId) {
-                await TaskAPI.deleteTask(userId, taskId);
-            }
-            loadWeekTasks();
-        } catch (error) {
-            console.error("Error deleting task", error);
-        }
-        setShowAddModal(false);
+        // Show confirmation alert
+        Alert.alert(
+            "Delete Task",
+            "Are you sure you want to delete this task?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                    onPress: () => {
+                        // User canceled, do nothing
+                        // We can keep the modal open in this case
+                    }
+                },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: async () => {
+                        // User confirmed, proceed with deletion
+                        try {
+                            const userId = await AsyncStorage.getItem('userId');
+                            if (userId) {
+                                await TaskAPI.deleteTask(userId, taskId);
+                            }
+                            loadWeekTasks(); // Refresh the task list
+                        } catch (error) {
+                            console.error("Error deleting task", error);
+                        }
+                        setShowAddModal(false); // Close the modal after deletion
+                    }
+                }
+            ],
+            { cancelable: true }
+        );
     };
 
     const handleEdit = (task: Task) => {

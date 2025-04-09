@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
-import { TouchableOpacity, Text, View, TextInput, Image, ImageBackground, StyleSheet } from "react-native";
+import { TouchableOpacity, Text, View, TextInput, Image, ImageBackground, StyleSheet, Alert } from "react-native";
 import { format } from "date-fns";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import TaskAPI from "../api/tasks";
@@ -176,20 +176,42 @@ const Home: React.FC = () => {
     };    
 
     const handleDelete = async (taskId: string) => {
-        try {
-            const userId = await AsyncStorage.getItem('userId');
-            if (userId) {
-                await TaskAPI.deleteTask(userId, taskId);
-            }
-            fetchTasks();
-        } catch (error) {
-            console.error("Error deleting task", error);
-        }
-        fetchTasks();
-        setShowPopup(false);
-        setNewTask("");
-        setSelectedDays([]);
-        setEditingTask(null);
+        // Show confirmation alert
+        Alert.alert(
+            "Delete Task",
+            "Are you sure you want to delete this task?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                    onPress: () => {
+                        // User canceled, do nothing
+                    }
+                },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: async () => {
+                        // User confirmed, proceed with deletion
+                        try {
+                            const userId = await AsyncStorage.getItem('userId');
+                            if (userId) {
+                                await TaskAPI.deleteTask(userId, taskId);
+                            }
+                            fetchTasks();
+                        } catch (error) {
+                            console.error("Error deleting task", error);
+                        }
+                        fetchTasks();
+                        setShowPopup(false);
+                        setNewTask("");
+                        setSelectedDays([]);
+                        setEditingTask(null);
+                    }
+                }
+            ],
+            { cancelable: true }
+        );
     };
 
     const handleEdit = (task: Task) => {
